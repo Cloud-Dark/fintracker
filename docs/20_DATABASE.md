@@ -340,6 +340,30 @@ termasuk kode dan saldo normal masing-masing, didokumentasikan pada
 tunggal (single source of truth) — dokumen ini tidak menduplikasi daftar
 tersebut agar tidak terjadi drift antara dua dokumen.
 
+### 10.1. Data Contoh Opsional
+
+Terpisah dari seeding wajib di atas, aplikasi menyediakan data contoh opsional
+yang dimuat atas permintaan pengguna melalui panel "Data Contoh" pada halaman
+Pengaturan. Data ini berisi 30 transaksi peragaan sepanjang kurang lebih empat
+bulan dan tidak pernah dimuat secara otomatis.
+
+Pembeda pentingnya dari seeding: seluruh transaksi contoh diposting melalui
+`postTransaction` pada kernel akuntansi, bukan ditulis langsung ke
+`localStorage`. Konsekuensinya, data contoh tunduk pada invarian yang sama
+seperti input pengguna — keseimbangan debit dan kredit, rantai hash SHA-256
+yang bersambung, serta alokasi `sequenceNum` monotonic. Verifikasi rantai atas
+data contoh karena itu selalu bernilai valid.
+
+Pemuatan bersifat idempoten: transaksi penanda diperiksa terlebih dahulu,
+sehingga pemanggilan kedua tidak menambah baris apa pun. Karena buku besar
+bersifat append-only, data contoh tidak dapat dihapus satu per satu; pengguna
+yang ingin mengosongkannya menjalankan Reset Seluruh Data, atau menerbitkan
+jurnal pembalik bila hanya sebagian yang perlu dibatalkan.
+
+Tanggal setiap transaksi contoh dihitung relatif terhadap hari pemuatan, bukan
+dipatok pada tanggal tetap, agar bucket umur piutang dan jendela deteksi
+duplikat 48 jam tetap bermakna kapan pun data dimuat.
+
 ---
 
 ## 11. Ekspor/Impor JSON

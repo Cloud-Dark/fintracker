@@ -108,6 +108,9 @@ Seluruh data tersimpan pada `localStorage` peramban dan terikat pada satu
 perangkat serta satu profil peramban. Data akan hilang bila pengguna
 membersihkan data situs.
 
+- **Data contoh.** Untuk meninjau aplikasi dengan data yang terisi, panel "Data
+  Contoh" pada halaman Pengaturan memuat 30 transaksi peragaan sekali jalan.
+  Pemuatan ini opsional dan tidak pernah berjalan otomatis.
 - **Cadangan.** Halaman Pengaturan menyediakan ekspor cadangan JSON penuh.
   Lakukan secara berkala.
 - **Pemulihan.** Halaman Pengaturan menerima berkas hasil ekspor melalui menu

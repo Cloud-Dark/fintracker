@@ -4,6 +4,7 @@ import Badge from '@/components/ui/Badge'
 import Modal from '@/components/ui/Modal'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { bootstrap, exportBackup, importBackup, resetAll } from '@/repositories/db'
+import { DEMO_TRANSACTION_COUNT, hasDemoData, loadDemoData } from '@/repositories/demoData'
 import { estimateUsage } from '@/repositories/storage'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
 import {
@@ -41,12 +42,15 @@ export default function Settings() {
   const [resetOpen, setResetOpen] = useState(false)
   const [resetPhrase, setResetPhrase] = useState('')
   const [sentinelTick, setSentinelTick] = useState(0)
+  const [demoLoaded, setDemoLoaded] = useState(false)
+  const [demoRunning, setDemoRunning] = useState(false)
 
   const refreshUsage = useCallback(() => setUsage(estimateUsage()), [])
 
   useEffect(() => {
     bootstrap()
     refreshUsage()
+    setDemoLoaded(hasDemoData())
   }, [refreshUsage])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps -- `sentinelTick` adalah penanda invalidasi manual; fungsi domain membaca penyimpanan.
@@ -112,6 +116,7 @@ export default function Settings() {
       importBackup(pendingImport.envelope)
       setPendingImport(null)
       refreshUsage()
+      setDemoLoaded(hasDemoData())
       setSentinelTick((n) => n + 1)
       push({
         title: 'Cadangan dipulihkan',
@@ -136,6 +141,7 @@ export default function Settings() {
       setResetOpen(false)
       setResetPhrase('')
       setVerification(null)
+      setDemoLoaded(false)
       refreshUsage()
       setSentinelTick((n) => n + 1)
       push({
@@ -151,6 +157,37 @@ export default function Settings() {
       })
     }
   }, [resetPhrase, push, refreshUsage])
+
+  const onLoadDemo = useCallback(() => {
+    setDemoRunning(true)
+    void loadDemoData()
+      .then((result) => {
+        setDemoLoaded(true)
+        refreshUsage()
+        setSentinelTick((n) => n + 1)
+        if (result.skipped) {
+          push({
+            title: 'Data contoh sudah ada',
+            description: 'Tidak ada transaksi baru yang ditambahkan.',
+            variant: 'info',
+          })
+          return
+        }
+        push({
+          title: 'Data contoh dimuat',
+          description: `${result.posted} transaksi diposting melalui kernel akuntansi.`,
+          variant: 'success',
+        })
+      })
+      .catch((error: unknown) => {
+        push({
+          title: 'Gagal memuat data contoh',
+          description: error instanceof Error ? error.message : 'Kesalahan tidak diketahui.',
+          variant: 'error',
+        })
+      })
+      .finally(() => setDemoRunning(false))
+  }, [push, refreshUsage])
 
   const onVerify = useCallback(() => {
     setVerifying(true)
@@ -219,6 +256,46 @@ export default function Settings() {
             className="sr-only"
             onChange={onPickFile}
           />
+        </div>
+
+        {/* Panel Data Contoh */}
+        <div className="panel p-6">
+          <p className="kicker mb-4">Data Contoh</p>
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">
+              Muat Data Peragaan
+            </h3>
+            {demoLoaded && <Badge variant="posted">Sudah dimuat</Badge>}
+          </div>
+          <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
+            Memposting {DEMO_TRANSACTION_COUNT} transaksi contoh sebuah agensi perangkat lunak
+            selama kurang lebih empat bulan: penjualan tunai dan kredit, transfer antar-dompet,
+            beban pokok jasa, gaji, marketing, serta pelunasan utang. Seluruhnya diposting melalui
+            kernel akuntansi yang sama seperti input manual, sehingga rantai hash dan keseimbangan
+            debit-kredit tetap sah.
+          </p>
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
+            Data ini menghidupkan seluruh laporan sekaligus memicu peringatan sentinel: piutang pada
+            beberapa bucket aging, pengeluaran di atas Rp 1.000.000 tanpa bukti bayar, dan sepasang
+            langganan identik berselang 24 jam.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              type="button"
+              className="btn-primary min-h-[40px] disabled:opacity-40"
+              onClick={onLoadDemo}
+              disabled={demoRunning || demoLoaded}
+            >
+              {demoRunning ? 'Memuat…' : 'Muat Data Contoh'}
+            </button>
+          </div>
+          {demoLoaded && (
+            <p className="mt-4 border-[1.5px] border-border bg-muted p-3 text-xs leading-relaxed text-muted-foreground">
+              Data contoh hanya dapat dimuat sekali. Untuk memuatnya kembali, jalankan Reset Seluruh
+              Data terlebih dahulu. Transaksi contoh tidak dapat dihapus satu per satu karena buku
+              besar bersifat append-only; gunakan jurnal pembalik bila perlu membatalkannya.
+            </p>
+          )}
         </div>
 
         {/* Panel Penyimpanan */}

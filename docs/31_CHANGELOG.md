@@ -10,7 +10,26 @@ klien statis.
 
 ## [Unreleased]
 
-Belum ada perubahan tercatat sejak 0.3.0.
+Belum ada perubahan tercatat sejak 0.4.0.
+
+## [0.4.0] - 2026-09-19
+
+### Added
+
+- Modul data contoh (`src/repositories/demoData.ts`) berisi 30 transaksi
+  peragaan sebuah agensi perangkat lunak sepanjang kurang lebih empat bulan.
+  Seluruh transaksi diposting melalui `postTransaction`, bukan ditulis langsung
+  ke penyimpanan, sehingga tetap tunduk pada invarian debit sama dengan kredit,
+  rantai hash SHA-256, dan alokasi sequence monotonic.
+- Panel "Data Contoh" pada halaman Pengaturan untuk memuat data peragaan sekali
+  jalan, dengan penanda status dan penjelasan cara mengulanginya lewat Reset.
+- Uji data contoh (10 pengujian) yang memverifikasi idempotensi, keseimbangan
+  debit-kredit, keutuhan rantai hash, persamaan neraca, terisinya bucket umur
+  piutang, serta munculnya ghost expense dan pasangan duplikat.
+
+### Changed
+
+- Jumlah pengujian otomatis naik dari 114 menjadi 124 pada tujuh berkas uji.
 
 ## [0.3.0] - 2026-09-19
 
