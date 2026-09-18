@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinTrack Core — Pembukuan Presisi</title>
+    <meta
+      name="description"
+      content="Pencatatan keuangan cepat dengan akurasi pembukuan berpasangan. Berjalan penuh secara luring."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('fintrack:v1:theme')
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          var theme = stored === 'light' || stored === 'dark' ? stored : prefersDark ? 'dark' : 'light'
+          document.documentElement.classList.toggle('dark', theme === 'dark')
+          document.documentElement.dataset.theme = theme
+        } catch (e) {
+          /* Penyimpanan lokal tidak tersedia; gunakan mode terang. */
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,210 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 160 24% 95%;
+    --foreground: 185 30% 8%;
+    --card: 160 30% 98%;
+    --card-foreground: 185 30% 8%;
+    --popover: 160 30% 98%;
+    --popover-foreground: 185 30% 8%;
+
+    --primary: 185 30% 9%;
+    --primary-foreground: 160 30% 97%;
+    --secondary: 162 55% 45%;
+    --secondary-foreground: 185 30% 8%;
+
+    --muted: 160 14% 89%;
+    --muted-foreground: 185 10% 36%;
+    --accent: 162 55% 45%;
+    --accent-foreground: 185 30% 8%;
+
+    --border: 185 22% 20%;
+    --input: 185 22% 20%;
+    --ring: 162 55% 45%;
+    --grid-line: 185 20% 40%;
+    --rule: 185 22% 20%;
+    --shadow-ink: 185 30% 9%;
+
+    --positive: 162 55% 38%;
+    --negative: 18 45% 32%;
+    --warning: 38 70% 42%;
+    --destructive: 6 55% 30%;
+    --destructive-foreground: 160 30% 97%;
+
+    --radius: 0rem;
+  }
+
+  .dark {
+    --background: 190 45% 5%;
+    --foreground: 165 20% 92%;
+    --card: 190 38% 8%;
+    --card-foreground: 165 20% 92%;
+    --popover: 190 38% 8%;
+    --popover-foreground: 165 20% 92%;
+
+    --primary: 162 42% 48%;
+    --primary-foreground: 190 45% 6%;
+    --secondary: 162 42% 48%;
+    --secondary-foreground: 190 45% 6%;
+
+    --muted: 190 30% 12%;
+    --muted-foreground: 175 12% 62%;
+    --accent: 162 42% 48%;
+    --accent-foreground: 190 45% 6%;
+
+    --border: 186 24% 20%;
+    --input: 186 24% 20%;
+    --ring: 162 42% 48%;
+    --grid-line: 175 18% 30%;
+    --rule: 186 24% 20%;
+    --shadow-ink: 162 42% 42%;
+
+    --positive: 162 48% 52%;
+    --negative: 18 55% 58%;
+    --warning: 38 75% 58%;
+    --destructive: 6 60% 55%;
+    --destructive-foreground: 190 45% 6%;
+
+    --radius: 0rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'ss01', 'cv01';
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-black;
+  }
+
+  h1 {
+    @apply text-4xl md:text-6xl;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  h2 {
+    @apply text-3xl md:text-5xl;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+  }
+}
+
+@layer components {
+  /* Kicker monospace khas: label kecil uppercase dengan tracking lebar. */
+  .kicker {
+    @apply font-mono text-[0.6875rem] uppercase tracking-[0.22em] text-muted-foreground;
+  }
+
+  .panel {
+    @apply border border-border bg-card;
+  }
+
+  .panel-lift {
+    @apply border border-border bg-card transition-all duration-300 ease-editorial;
+  }
+
+  .panel-lift:hover {
+    @apply -translate-x-[3px] -translate-y-[3px] shadow-hard-sm;
+  }
+
+  .rule-line {
+    @apply h-px w-full bg-rule opacity-30;
+  }
+
+  /* Angka keuangan selalu rata kolom. */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border border-border px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] transition-all duration-200 ease-editorial;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-primary-foreground;
+  }
+
+  .btn-primary:hover {
+    @apply -translate-x-[2px] -translate-y-[2px] shadow-hard-xs;
+  }
+
+  .btn-signal {
+    @apply btn bg-secondary text-secondary-foreground;
+  }
+
+  .btn-signal:hover {
+    @apply -translate-x-[2px] -translate-y-[2px] shadow-hard-xs;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-foreground;
+  }
+
+  .btn-ghost:hover {
+    @apply bg-muted;
+  }
+
+  .field {
+    @apply w-full border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground;
+  }
+
+  .badge {
+    @apply inline-flex items-center border border-border px-2 py-0.5 font-mono text-[0.625rem] uppercase tracking-[0.18em];
+  }
+
+  /* Latar bertekstur ledger untuk area hero. */
+  .ledger-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--grid-line) / 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--grid-line) / 0.12) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(hsl(var(--grid-line) / 0.25) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

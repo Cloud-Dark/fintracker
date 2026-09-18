@@ -1,0 +1,26 @@
+# Risk Register — FinTrack Core
+
+> Status: Final
+> Terakhir diperbarui: 2026-09-19
+> Pemilik: Office of the CTO
+
+Risiko yang timbul dari keputusan arsitektur klien-saja berbasis `localStorage`
+(lihat [11_DECISIONS.md](11_DECISIONS.md)). Likelihood dan Impact dinilai
+Rendah/Sedang/Tinggi secara kualitatif; belum ada model kuantitatif formal (_TBD_).
+
+| ID | Risiko | Likelihood | Impact | Mitigasi | Owner |
+|---|---|---|---|---|---|
+| R-001 | Kuota `localStorage` habis (perkiraan batas 5 MB) sehingga penulisan transaksi baru gagal | Sedang | Tinggi | Pemantauan kuota (TR-010) dengan peringatan pada ambang 80%, anjuran ekspor arsip dan pembersihan data lama | Office of the CTO |
+| R-002 | Data hilang total karena pengguna membersihkan data browser (clear site data) atau berganti perangkat | Sedang | Tinggi | Anjuran ekspor JSON berkala (NFR-005), dokumentasi eksplisit di UI bahwa data bersifat lokal, tombol ekspor selalu tersedia di Dashboard/Settings | Product Office |
+| R-003 | Tidak ada otentikasi maupun enkripsi at-rest; siapa pun dengan akses perangkat dapat membaca data keuangan | Tinggi | Tinggi | Di luar scope v1 (lihat ADR-004); direkomendasikan sebagai prasyarat rencana pasca-v1 sebelum data sensitif produksi disimpan dalam volume besar | Office of the CTO |
+| R-004 | Integritas rantai hash dapat direkayasa langsung dari DevTools karena validasi hanya berjalan di klien | Tinggi | Sedang | Hash chain berfungsi sebagai deteksi tamper untuk kesalahan tidak disengaja dan audit internal, bukan proteksi terhadap pengguna berniat jahat dengan akses penuh ke perangkatnya sendiri; batasan ini didokumentasikan eksplisit ke pengguna | Office of the CTO |
+| R-005 | Tidak ada sinkronisasi multi-perangkat; data pada satu perangkat tidak tercermin di perangkat lain | Tinggi | Sedang | Di luar scope v1 (lihat ADR-004); ekspor/impor manual sebagai solusi sementara; sinkronisasi direncanakan pasca-v1 (lihat [08_ROADMAP.md](08_ROADMAP.md)) | Product Office |
+| R-006 | Kesalahan pemetaan akun (kategori ke CoA) menyebabkan laporan keuangan tidak akurat | Sedang | Tinggi | Seed CoA terstandar dan tervalidasi (FR-010), pemetaan kategori-ke-akun wajib saat pembuatan kategori (FR-011), uji Vitest untuk posting rules | Office of the CFO |
+| R-007 | Performa degradasi pada volume data besar karena seluruh pemrosesan berjalan di klien tanpa database terindeks | Sedang | Sedang | Index in-memory (`Map`) per akun dan periode (TR-009), target performa NFR-001/NFR-002 diuji pada dataset 10.000 entri | Office of the CTO |
+| R-008 | Ketergantungan pada satu perangkat; kegagalan perangkat (rusak/hilang) menyebabkan kehilangan akses ke seluruh riwayat keuangan | Sedang | Tinggi | Anjuran ekspor rutin, dokumentasi prosedur backup manual di [17_DEVELOPER_SETUP.md](17_DEVELOPER_SETUP.md) dan panduan pengguna; solusi permanen menunggu sinkronisasi pasca-v1 | Product Office |
+
+## Referensi
+
+- [11_DECISIONS.md](11_DECISIONS.md)
+- [04_TRD.md](04_TRD.md)
+- [08_ROADMAP.md](08_ROADMAP.md)
