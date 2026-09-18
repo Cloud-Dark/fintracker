@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { bootstrap, getAccounts, getCategories, getTransactions } from '@/repositories/db'
+import { autoLoadDemoData } from '@/repositories/demoData'
 import {
   postTransaction,
   reverseTransaction,
@@ -56,23 +57,44 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     setSentinel(sentinelSummary())
   }, [])
 
-  // Seed idempoten dijalankan sekali saat mount.
+  // Seed idempoten dijalankan sekali saat mount. Pada pemasangan baru, data
+  // contoh ikut dimuat agar dasbor tidak tampil nol seluruhnya; pemuatan ini
+  // dilewati bila pengguna pernah menjalankan Reset Seluruh Data.
   useEffect(() => {
-    try {
-      bootstrap()
-      setAccounts(getAccounts())
-      setCategories(getCategories())
-      setTransactions(getTransactions())
-      setSummary(dashboardSummary())
-      setSentinel(sentinelSummary())
-    } catch (error) {
-      push({
-        title: 'Gagal menyiapkan buku besar',
-        description: errorMessage(error),
-        variant: 'error',
-      })
-    } finally {
-      setReady(true)
+    let batal = false
+
+    async function siapkan() {
+      try {
+        bootstrap()
+        const hasil = await autoLoadDemoData()
+        if (batal) return
+        setAccounts(getAccounts())
+        setCategories(getCategories())
+        setTransactions(getTransactions())
+        setSummary(dashboardSummary())
+        setSentinel(sentinelSummary())
+        if (hasil.posted > 0) {
+          push({
+            title: 'Data contoh dimuat',
+            description: `${hasil.posted} transaksi peragaan disiapkan. Jalankan Reset Seluruh Data pada halaman Pengaturan untuk memulai dari buku besar kosong.`,
+            variant: 'info',
+          })
+        }
+      } catch (error) {
+        if (batal) return
+        push({
+          title: 'Gagal menyiapkan buku besar',
+          description: errorMessage(error),
+          variant: 'error',
+        })
+      } finally {
+        if (!batal) setReady(true)
+      }
+    }
+
+    void siapkan()
+    return () => {
+      batal = true
     }
   }, [push])
 

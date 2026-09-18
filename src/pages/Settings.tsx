@@ -4,7 +4,12 @@ import Badge from '@/components/ui/Badge'
 import Modal from '@/components/ui/Modal'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { bootstrap, exportBackup, importBackup, resetAll } from '@/repositories/db'
-import { DEMO_TRANSACTION_COUNT, hasDemoData, loadDemoData } from '@/repositories/demoData'
+import {
+  DEMO_TRANSACTION_COUNT,
+  hasDemoData,
+  loadDemoData,
+  suppressAutoDemo,
+} from '@/repositories/demoData'
 import { estimateUsage } from '@/repositories/storage'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
 import {
@@ -138,6 +143,9 @@ export default function Settings() {
     try {
       resetAll()
       bootstrap()
+      // Menghormati pilihan pengguna: tanpa penanda ini, data contoh akan
+      // dimuat ulang otomatis pada muat ulang berikutnya.
+      suppressAutoDemo()
       setResetOpen(false)
       setResetPhrase('')
       setVerification(null)

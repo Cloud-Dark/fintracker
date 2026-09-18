@@ -13,6 +13,7 @@ import { postTransaction } from '@/domain/kernel'
 import { toISODate } from '@/lib/date'
 import type { MutationType } from '@/types'
 import { bootstrap, getAccounts, getCategories, getTransactions } from './db'
+import { KEYS, hasKey, writeObject } from './storage'
 
 /** Kode akun yang dipakai skenario data contoh. */
 const KAS_TUNAI = '10100'
@@ -23,6 +24,12 @@ const UTANG_USAHA = '20100'
 
 /** Penanda agar pemuatan data contoh tidak berjalan dua kali. */
 const DEMO_MARKER = 'Setoran modal awal pemilik'
+
+/**
+ * Kunci penanda bahwa pengguna sengaja mengosongkan buku besar. Selama kunci
+ * ini ada, data contoh tidak pernah dimuat otomatis lagi.
+ */
+const DEMO_OPT_OUT_KEY = `${KEYS.settings}:demo_opt_out`
 
 interface DemoTx {
   /** Hari ke belakang dari hari ini; 0 berarti hari ini. */
@@ -400,4 +407,37 @@ export async function loadDemoData(): Promise<DemoDataResult> {
   }
 
   return { posted, skipped: false }
+}
+
+/**
+ * Memuat data contoh satu kali pada pemasangan baru.
+ *
+ * Dipanggil saat aplikasi pertama kali dibuka agar pengguna langsung melihat
+ * dasbor, laporan, dan peringatan sentinel yang terisi, bukan layar nol.
+ *
+ * Pemuatan otomatis hanya terjadi bila ketiga syarat terpenuhi:
+ * 1. Buku besar benar-benar kosong (belum ada transaksi apa pun).
+ * 2. Data contoh belum pernah dimuat.
+ * 3. Pengguna belum pernah menjalankan Reset Seluruh Data pada peramban ini.
+ *
+ * Syarat ketiga penting: tanpa itu, Reset Seluruh Data akan selalu diikuti
+ * pemuatan ulang data contoh sehingga tombol reset kehilangan maknanya.
+ * Penanda reset disimpan pada kunci pengaturan dan ikut terbawa saat impor
+ * cadangan, sehingga keputusan pengguna tetap dihormati lintas sesi.
+ */
+export async function autoLoadDemoData(): Promise<DemoDataResult> {
+  bootstrap()
+
+  if (hasKey(DEMO_OPT_OUT_KEY)) return { posted: 0, skipped: true }
+  if (getTransactions().length > 0) return { posted: 0, skipped: true }
+
+  return loadDemoData()
+}
+
+/**
+ * Menandai bahwa pengguna memilih buku besar kosong, sehingga data contoh
+ * tidak dimuat ulang secara otomatis. Dipanggil setelah Reset Seluruh Data.
+ */
+export function suppressAutoDemo(): void {
+  writeObject(DEMO_OPT_OUT_KEY, { optedOutAt: new Date().toISOString() })
 }
