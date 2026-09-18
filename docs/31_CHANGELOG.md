@@ -12,6 +12,24 @@ klien statis.
 
 ### Added
 
+- Laporan **Neraca Saldo** (FR-025): fungsi `trialBalance(asOf?)` pada
+  `src/domain/reporting.ts` yang menjumlahkan ulang sisi debit dan kredit dari
+  baris ledger — bukan dari kolom `currentBalance` — sebagai pembuktian
+  aritmetika yang independen terhadap nilai turunan.
+- Tab **Neraca Saldo** pada halaman Laporan, memuat dua kartu bukti
+  berdampingan (Uji 1 keseimbangan aritmetika, Uji 2 keutuhan rantai hash),
+  tabel per akun dengan paginasi, blok total di luar tabel, dan ekspor CSV.
+- Lima uji untuk neraca saldo, termasuk uji adversarial yang sengaja merusak
+  `currentBalance` seluruh akun lalu memastikan total tidak berubah
+  (133 menjadi 138 uji).
+- Tautan Kode Sumber (GitHub) dan Demo Langsung pada footer aplikasi serta
+  panel Tentang Aplikasi di halaman Pengaturan, bersumber dari satu berkas
+  `src/lib/links.ts` agar tidak saling menyimpang.
+- [README.md](../README.md): seksi "Mekanisme Pembuktian Debit dan Kredit"
+  yang menguraikan empat lapis pembuktian beserta tabel cara memeriksanya
+  sendiri, dan seksi "Tautan".
+- [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md) seksi 4.1: tabel empat lapis
+  pembuktian dan alasan neraca saldo tidak membaca saldo tersimpan.
 - Paginasi tabel pada komponen `DataTable` melalui prop `paginate`, beserta
   komponen `Pagination` dan fungsi murni `buildPages` pada `src/lib/pagination.ts`.
   Diaktifkan pada Transaksi (25 baris per halaman) dan Buku Besar (50 baris per

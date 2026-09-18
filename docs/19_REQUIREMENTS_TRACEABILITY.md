@@ -10,7 +10,7 @@ fase implementasi pada [06_IMPLEMENTATION_PLAN.md](06_IMPLEMENTATION_PLAN.md),
 dan modul kode yang direncanakan.
 
 **Catatan penomoran:** [03_FRD.md](03_FRD.md) menggunakan penomoran berkelompok
-per bagian (FR-001–004, FR-010–011, FR-020–024, FR-030–033, FR-040–042,
+per bagian (FR-001–004, FR-010–011, FR-020–025, FR-030–033, FR-040–042,
 FR-050–051) dengan celah yang disengaja untuk ruang penambahan di masa depan.
 Tabel di bawah hanya memuat ID yang benar-benar didefinisikan di FRD; ID yang
 tidak muncul di FRD tidak dicantumkan agar tidak mengarang kebutuhan yang
@@ -29,6 +29,7 @@ tidak ada.
 | FR-022 | Laporan Laba Rugi Multi-Step     | TR-006, TR-009                                             | Fase 3                           | `src/domain/reports/profitLoss.ts`                                      |
 | FR-023 | Laporan Neraca                   | TR-006, TR-009                                             | Fase 3                           | `src/domain/reports/balanceSheet.ts`                                    |
 | FR-024 | Laporan Arus Kas (Direct Method) | TR-006, TR-009                                             | Fase 3                           | `src/domain/reports/cashFlow.ts`                                        |
+| FR-025 | Neraca Saldo (Trial Balance)     | TR-003, TR-006, TR-009                                     | Fase 3                           | `src/domain/reporting.ts` (`trialBalance`)                              |
 | FR-030 | Aging Receivables Alert          | TR-009                                                     | Fase 3                           | `src/domain/sentinel/agingReceivables.ts`                               |
 | FR-031 | Duplicate Outflow Prevention     | TR-009                                                     | Fase 3                           | `src/domain/sentinel/duplicateOutflow.ts`                               |
 | FR-032 | Ghost Expense Tagging            | TR-006                                                     | Fase 3                           | `src/domain/sentinel/ghostExpense.ts`                                   |

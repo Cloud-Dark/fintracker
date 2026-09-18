@@ -131,6 +131,39 @@ Invarian ini divalidasi oleh kernel sebelum unit-of-work di-flush ke
 4. Tidak ada mekanisme "partial commit"; komit bersifat all-or-nothing pada
    level transaksi, konsisten dengan emulasi atomic commit pada TR-002.
 
+### 4.1 Mekanisme Pembuktian Berlapis
+
+Invarian di atas ditegakkan pada saat penulisan. Penegakan saat penulisan saja
+tidak cukup sebagai bukti, karena ia tidak dapat membuktikan apa pun tentang
+data yang sudah tersimpan — misalnya bila penyimpanan peramban disunting dari
+luar aplikasi. Karena itu pembuktian disusun dalam empat lapis yang saling
+independen.
+
+| Lapis | Mekanisme                                   | Waktu                       | Artefak                      |
+| ----- | ------------------------------------------- | --------------------------- | ---------------------------- |
+| 1     | Penolakan saat penulisan (`assertBalanced`) | Sebelum commit              | `LedgerImbalanceError`       |
+| 2     | Pengembalian penuh unit-of-work             | Saat kegagalan              | Snapshot/restore penyimpanan |
+| 3     | Neraca Saldo (FR-025)                       | Kapan saja, atas permintaan | `trialBalance()`             |
+| 4     | Verifikasi rantai hash (FR-040)             | Kapan saja, atas permintaan | `verifyChain()`              |
+
+**Lapis 3 — Neraca Saldo.** Fungsi `trialBalance(asOf?)` pada
+`src/domain/reporting.ts` menjumlahkan ulang kolom debit dan kredit seluruh
+baris ledger, lalu melaporkan `totalDebit`, `totalCredit`, dan
+`difference = totalDebit - totalCredit`. Dua keputusan desainnya perlu dicatat:
+
+1. Penjumlahan dilakukan atas baris ledger, **bukan** atas kolom
+   `currentBalance` pada entitas akun. Saldo tersimpan adalah nilai turunan;
+   memakainya berarti membuktikan sebuah angka dengan angka itu sendiri.
+2. Baris pada transaksi bertanda `VOID` tetap ikut dijumlahkan. Buku besar
+   bersifat _append-only_ (lihat seksi 5); jurnal pembalik dan jurnal aslinya
+   sama-sama fakta historis, dan keduanya seimbang sehingga tidak menggeser
+   selisih.
+
+**Lapis 4 — Rantai hash.** Neraca saldo membuktikan aritmetika, tetapi tidak
+membuktikan bahwa deret baris tidak diubah atau disisipi. Verifikasi rantai
+SHA-256 menutup celah itu. Keduanya ditampilkan berdampingan pada tab
+Neraca Saldo di halaman Laporan agar pengguna membaca kedua bukti sekaligus.
+
 ## 5. Reversal Pattern untuk Koreksi
 
 Ledger bersifat immutable (TR-004). Koreksi transaksi yang telah `POSTED`

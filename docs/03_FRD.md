@@ -99,6 +99,24 @@ Menyajikan Aset, Liabilitas, dan Ekuitas per tanggal tertentu dengan penegakan
 Menyajikan penerimaan dan pengeluaran kas aktual periode berjalan, dikelompokkan
 menjadi aktivitas operasi, investasi, dan pendanaan.
 
+### FR-025 — Neraca Saldo (Trial Balance)
+
+Menyajikan akumulasi sisi debit dan sisi kredit per akun sampai dengan tanggal
+tertentu, beserta total kedua sisi dan selisihnya. Angka dihitung ulang dari
+baris ledger, bukan dari kolom saldo tersimpan pada entitas akun, sehingga
+laporan ini berfungsi sebagai pembuktian aritmetika yang independen terhadap
+nilai turunan.
+
+**Acceptance Criteria**
+
+- Total debit sama dengan total kredit dan selisih bernilai nol pada buku besar
+  yang sehat.
+- Baris bertanda `VOID` tetap ikut dijumlahkan, karena buku besar bersifat
+  _append-only_ dan jurnal pembalik merupakan fakta historis.
+- Merusak nilai `currentBalance` pada penyimpanan tidak mengubah hasil laporan.
+- Halaman laporan menampilkan hasil pemeriksaan aritmetika berdampingan dengan
+  hasil verifikasi rantai hash (lihat FR-040).
+
 ## 4. Cash Leakage Sentinel
 
 ### FR-030 — Aging Receivables Alert
