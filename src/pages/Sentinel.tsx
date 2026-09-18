@@ -48,14 +48,34 @@ function bucketBadgeVariant(key: AgingBucketKey): 'warning' | 'unverified' | 'ne
   return 'neutral'
 }
 
-/** Wadah tabel lebar: berbingkai, bisa discroll, dan dapat difokuskan lewat keyboard. */
-function ScrollableTable({ label, children }: { label: string; children: React.ReactNode }) {
+/**
+ * Wadah tabel lebar: berbingkai, bisa digeser, dan dapat difokuskan lewat
+ * keyboard. `maxHeight` mengaktifkan gulir menegak untuk daftar panjang seperti
+ * rincian piutang dan pengeluaran tanpa bukti, sehingga tabel tidak mendorong
+ * tombol tindakan di bawahnya keluar layar.
+ */
+function ScrollableTable({
+  label,
+  children,
+  maxHeight,
+}: {
+  label: string
+  children: React.ReactNode
+  maxHeight?: string
+}) {
   return (
     <div
       role="region"
       aria-label={label}
       tabIndex={0}
-      className="w-full overflow-x-auto border border-border bg-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      style={maxHeight ? { maxHeight } : undefined}
+      className={[
+        'scroll-ledger w-full overflow-x-auto border border-border bg-card',
+        maxHeight ? 'overflow-y-auto' : '',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring',
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       {children}
     </div>
@@ -265,7 +285,10 @@ export default function Sentinel() {
               )}
 
               {/* Rincian per piutang */}
-              <ScrollableTable label="Tabel rincian setiap piutang yang belum lunas, dapat digeser mendatar">
+              <ScrollableTable
+                label="Tabel rincian setiap piutang yang belum lunas, dapat digeser"
+                maxHeight="60vh"
+              >
                 <table className="w-full min-w-[680px] border-collapse text-sm">
                   <caption className="kicker px-4 py-3 text-left">
                     Rincian piutang — {sortedAgingItems.length} entri, diurutkan dari yang tertua
@@ -440,7 +463,10 @@ export default function Sentinel() {
             />
           ) : (
             <div className="flex flex-col gap-6">
-              <ScrollableTable label="Tabel pengeluaran besar tanpa bukti bayar, dapat digeser mendatar">
+              <ScrollableTable
+                label="Tabel pengeluaran besar tanpa bukti bayar, dapat digeser"
+                maxHeight="60vh"
+              >
                 <table className="w-full min-w-[620px] border-collapse text-sm">
                   <caption className="kicker px-4 py-3 text-left">
                     {ghosts.length} pengeluaran tanpa bukti — total {formatIDR(ghostTotal)}

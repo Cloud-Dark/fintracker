@@ -274,7 +274,12 @@ export default function Transactions() {
         columns={columns}
         rows={rows}
         getRowKey={(row) => row.id}
-        caption={`${rows.length} entri ditampilkan`}
+        caption={`${rows.length} entri cocok dengan filter`}
+        paginate
+        initialPageSize={25}
+        itemLabel="transaksi"
+        maxBodyHeight="70vh"
+        resetKey={`${month}|${mutationFilter}|${statusFilter}|${search}`}
         emptyTitle="Tidak ada transaksi yang cocok"
         emptyDescription="Ubah filter di atas, atau catat transaksi baru untuk mengisi buku besar."
         emptyAction={

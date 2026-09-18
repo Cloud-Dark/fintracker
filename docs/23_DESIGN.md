@@ -123,6 +123,32 @@ Kicker selalu berupa label uppercase pendek, contoh: `LEDGER — JURNAL UMUM —
 - Kolom nominal rata kanan; kolom deskripsi rata kiri.
 - Hover baris: background `--muted`, tanpa shadow (baris bukan kartu).
 
+### 6.4.1 Paginasi Tabel
+
+- Ditempatkan sebagai baris kaki di dalam bingkai tabel, dipisahkan garis
+  `border-t` 1.5px; bukan elemen mengambang terpisah dari tabelnya.
+- Tombol nomor halaman berbentuk kotak siku minimal 36x36px, radius 0, border
+  1.5px. Halaman aktif memakai satu-satunya sinyal mint pada kontrol tersebut
+  (`--accent` sebagai latar, teks `--accent-foreground`); halaman lain netral.
+- Deret nomor selalu memuat halaman pertama, terakhir, dan tetangga langsung
+  halaman aktif. Pemotongan ditandai elipsis, tidak pernah dua berdampingan.
+- Ringkasan posisi ("Menampilkan 1-25 dari 133") memakai mono kecil dengan
+  `tabular-nums`, diberi `aria-live="polite"` agar perpindahan halaman terdengar
+  oleh pembaca layar.
+- Pemilih jumlah baris memakai pola `.field` yang sama dengan form lain.
+
+### 6.4.2 Scrollbar
+
+- Batang gulir mengikuti bahasa Ledger Desk: persegi tanpa radius, tanpa
+  bayangan, lebar 10px. Warna diambil dari token tema sehingga ikut berubah pada
+  mode gelap.
+- Landasan memakai `--muted` dengan garis pembatas `--border` tipis; genggaman
+  memakai `--border` penuh dan berubah menjadi `--accent` saat disentuh.
+- Ditulis dua kali: properti `scrollbar-width`/`scrollbar-color` untuk Firefox
+  dan pseudo-elemen `::-webkit-scrollbar` untuk Chromium serta WebKit.
+- Diterapkan lewat kelas `.scroll-ledger`, bukan secara global, agar gulir
+  peramban bawaan pada dokumen utama tetap terasa native.
+
 ### 6.5 Form Quick Entry
 
 - Input field: border 1.5px solid, radius 0, focus ring 2px warna signal dengan offset 2px.

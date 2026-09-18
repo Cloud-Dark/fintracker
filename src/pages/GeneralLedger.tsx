@@ -298,6 +298,11 @@ export default function GeneralLedger() {
         rows={rows}
         getRowKey={(row) => row.id}
         caption={`Buku besar — ${rows.length} baris jurnal pada rentang terpilih`}
+        paginate
+        initialPageSize={50}
+        itemLabel="baris jurnal"
+        maxBodyHeight="70vh"
+        resetKey={`${accountId}|${from}|${to}|${entryType}`}
         emptyTitle="Tidak ada baris jurnal"
         emptyDescription="Tidak ada entri buku besar yang cocok dengan filter saat ini."
       />

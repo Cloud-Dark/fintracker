@@ -10,6 +10,23 @@ klien statis.
 
 ## [Unreleased]
 
+### Added
+
+- Paginasi tabel pada komponen `DataTable` melalui prop `paginate`, beserta
+  komponen `Pagination` dan fungsi murni `buildPages` pada `src/lib/pagination.ts`.
+  Diaktifkan pada Transaksi (25 baris per halaman) dan Buku Besar (50 baris per
+  halaman); tabel pendek seperti Chart of Accounts sengaja dibiarkan utuh.
+  Ukuran halaman dapat diubah pengguna ke 10, 25, 50, atau 100 baris.
+- Gulir menegak dengan kepala tabel melekat (`sticky`) melalui prop
+  `maxBodyHeight`, dipakai pada Transaksi, Buku Besar, serta kedua tabel panjang
+  pada halaman Sentinel, sehingga tombol tindakan di bawah tabel tidak terdorong
+  keluar layar.
+- Kelas `.scroll-ledger` pada `src/styles/index.css`: batang gulir bergaya
+  Editorial Brutalism yang mengambil warna dari token tema, ditulis untuk
+  Firefox maupun Chromium/WebKit.
+- Enam uji untuk `buildPages`, mencakup pemotongan elipsis di kedua sisi dan
+  jaminan halaman aktif selalu dapat dijangkau langsung (127 menjadi 133 uji).
+
 ### Changed
 
 - Data contoh kini dimuat otomatis sekali jalan pada pemasangan baru, saat buku

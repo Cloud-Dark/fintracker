@@ -196,6 +196,42 @@
     background-image: radial-gradient(hsl(var(--grid-line) / 0.25) 1px, transparent 1px);
     background-size: 20px 20px;
   }
+
+  /*
+    Scrollbar bergaya Ledger Desk: batang persegi tanpa radius, warna mengikuti
+    token tema sehingga ikut berubah pada mode gelap. Aturan `scrollbar-*`
+    melayani Firefox, pseudo-elemen `::-webkit-scrollbar` melayani Chromium dan
+    WebKit; keduanya ditulis agar tampilan konsisten lintas peramban.
+  */
+  .scroll-ledger {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scroll-ledger::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scroll-ledger::-webkit-scrollbar-track {
+    background-color: hsl(var(--muted));
+    border-left: 1px solid hsl(var(--border) / 0.4);
+    border-top: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  .scroll-ledger::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border: 2px solid hsl(var(--muted));
+  }
+
+  .scroll-ledger::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  /* Sudut pertemuan batang mendatar dan menegak. */
+  .scroll-ledger::-webkit-scrollbar-corner {
+    background-color: hsl(var(--muted));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
