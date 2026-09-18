@@ -12,6 +12,17 @@ klien statis.
 
 ### Added
 
+- Komponen `DatePicker` (`src/components/ui/DatePicker.tsx`) beserta logika
+  kalender murninya pada `src/lib/calendar.ts`: kalender yang digambar sendiri,
+  navigasi papan tik penuh, pintasan Hari Ini dan Kosongkan, serta batas
+  `min`/`max`. Menggantikan seluruh lima `input type="date"` pada Quick Entry,
+  Buku Besar, dan Laporan. Ditulis tanpa pustaka tanggal pihak ketiga sesuai
+  TR-011.
+- Tiga puluh uji kalender, mencakup tahun kabisat, aturan abad, batas bulan dan
+  tahun, serta penolakan tanggal yang tidak ada seperti `2026-02-30`
+  (150 menjadi 180 uji).
+- [23_DESIGN.md](23_DESIGN.md) seksi 6.4.4: ketentuan visual, perilaku, dan
+  aksesibilitas pemilih tanggal.
 - Komponen `SearchSelect` (`src/components/ui/SearchSelect.tsx`) beserta logika
   murninya pada `src/lib/select.ts`: dropdown dengan kotak pencarian, pola ARIA
   combobox, dan navigasi papan tik penuh. Menggantikan seluruh sebelas elemen

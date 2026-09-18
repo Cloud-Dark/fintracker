@@ -3,6 +3,7 @@ import DataTable, { type Column } from '@/components/ui/DataTable'
 import Badge from '@/components/ui/Badge'
 import SectionHeader from '@/components/ui/SectionHeader'
 import SearchSelect from '@/components/ui/SearchSelect'
+import DatePicker from '@/components/ui/DatePicker'
 import { bootstrap, getAccounts, getLedgerEntries } from '@/repositories/db'
 import { generalLedger, type GeneralLedgerFilter, type GeneralLedgerRow } from '@/domain/reporting'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
@@ -193,25 +194,13 @@ export default function GeneralLedger() {
             <label htmlFor="gl-from" className="kicker mb-2 block">
               Dari Tanggal
             </label>
-            <input
-              id="gl-from"
-              type="date"
-              className="field num"
-              value={from}
-              onChange={(event) => setFrom(event.target.value)}
-            />
+            <DatePicker id="gl-from" value={from} max={to || undefined} onChange={setFrom} />
           </div>
           <div>
             <label htmlFor="gl-to" className="kicker mb-2 block">
               Sampai Tanggal
             </label>
-            <input
-              id="gl-to"
-              type="date"
-              className="field num"
-              value={to}
-              onChange={(event) => setTo(event.target.value)}
-            />
+            <DatePicker id="gl-to" value={to} min={from || undefined} onChange={setTo} />
           </div>
           <div>
             <label htmlFor="gl-entry" className="kicker mb-2 block">

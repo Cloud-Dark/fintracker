@@ -5,6 +5,7 @@ import { formatIDR, parseIDR } from '@/lib/money'
 import { formatDateID, toISODate } from '@/lib/date'
 import type { Account, MutationType, Transaction } from '@/types'
 import SearchSelect from '@/components/ui/SearchSelect'
+import DatePicker from '@/components/ui/DatePicker'
 
 export type QuickEntryFormProps = {
   /** Dipanggil setelah transaksi berhasil diposting. */
@@ -262,18 +263,17 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
           <label htmlFor={dateId} className="kicker mb-2 block">
             Tanggal
           </label>
-          <input
+          <DatePicker
             id={dateId}
             name="transactionDate"
-            type="date"
             value={transactionDate}
-            onChange={(e) => {
-              setTransactionDate(e.target.value)
+            onChange={(iso) => {
+              setTransactionDate(iso)
               resetWarnings()
             }}
-            aria-invalid={errors.transactionDate ? true : undefined}
-            aria-describedby={errors.transactionDate ? `${dateId}-error` : undefined}
-            className="field num min-h-[44px]"
+            invalid={Boolean(errors.transactionDate)}
+            describedBy={errors.transactionDate ? `${dateId}-error` : undefined}
+            className="min-h-[44px]"
           />
           {errors.transactionDate && (
             <p id={`${dateId}-error`} role="alert" className="mt-2 text-xs text-negative">

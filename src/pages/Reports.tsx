@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import SectionHeader from '@/components/ui/SectionHeader'
 import Badge from '@/components/ui/Badge'
+import DatePicker from '@/components/ui/DatePicker'
 import DataTable, { type Column } from '@/components/ui/DataTable'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
 import {
@@ -331,24 +332,22 @@ export default function Reports() {
               <label htmlFor="rep-from" className="kicker mb-2 block">
                 Dari Tanggal
               </label>
-              <input
+              <DatePicker
                 id="rep-from"
-                type="date"
-                className="field num"
                 value={custom.from}
-                onChange={(event) => setCustom((prev) => ({ ...prev, from: event.target.value }))}
+                max={custom.to || undefined}
+                onChange={(iso) => setCustom((prev) => ({ ...prev, from: iso }))}
               />
             </div>
             <div>
               <label htmlFor="rep-to" className="kicker mb-2 block">
                 Sampai Tanggal
               </label>
-              <input
+              <DatePicker
                 id="rep-to"
-                type="date"
-                className="field num"
                 value={custom.to}
-                onChange={(event) => setCustom((prev) => ({ ...prev, to: event.target.value }))}
+                min={custom.from || undefined}
+                onChange={(iso) => setCustom((prev) => ({ ...prev, to: iso }))}
               />
             </div>
           </div>

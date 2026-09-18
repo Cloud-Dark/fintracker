@@ -186,6 +186,44 @@ Pemilih ukuran halaman pada komponen `Pagination` sengaja tetap memakai elemen
 `select` bawaan: pilihannya hanya empat angka, sehingga kotak pencarian justru
 menambah langkah tanpa mempercepat apa pun.
 
+### 6.4.4 Pemilih Tanggal
+
+Seluruh masukan tanggal memakai komponen `DatePicker`, bukan `input type="date"`
+bawaan. Panel kalender bawaan digambar oleh sistem operasi sehingga tidak dapat
+mengikuti bahasa visual proyek dan tampil berbeda-beda antar peramban; kalender
+ini digambar sendiri sehingga seragam.
+
+Komponen ditulis tanpa pustaka tanggal pihak ketiga, konsisten dengan TR-011.
+Seluruh perhitungan kalendernya berada pada `src/lib/calendar.ts` dan diuji
+sebagai fungsi murni.
+
+Ketentuan visual:
+
+- Pemicu memakai kelas `.field` dan menampilkan tanggal dalam format
+  `formatDateID`, misalnya `19 Sep 2026`, bukan bentuk ISO mentah.
+- Panel selebar 300px dengan bayangan offset keras `4px 4px 0` dan radius nol.
+- Kisi selalu enam pekan (42 sel) sehingga tinggi panel tidak berubah saat
+  berpindah bulan; pergeseran tinggi akan membuat kendali di bawahnya melompat.
+- Kolom dimulai Senin, mengikuti kebiasaan kalender Indonesia.
+- Tanggal terpilih adalah satu-satunya sinyal mint. Sorotan papan tik memakai
+  batas tegas warna `foreground`, dan hari ini ditandai garis bawah ganda bila
+  sedang tidak terpilih.
+- Tanggal di luar rentang `min`/`max` diredupkan dan tidak dapat diklik.
+
+Ketentuan perilaku dan aksesibilitas:
+
+- Pemicu membawa `aria-haspopup="dialog"`; kisi memakai `role="grid"` dengan
+  anak `role="row"` dan sel `role="gridcell"`.
+- Fokus berpindah ke kisi saat panel dibuka, sehingga navigasi papan tik langsung
+  bekerja tanpa Tab tambahan.
+- Papan tik: panah kiri/kanan bergeser satu hari, panah atas/bawah satu pekan,
+  `PageUp`/`PageDown` satu bulan, `Enter` atau spasi memilih, `Escape` menutup.
+- Menggeser sorotan keluar bulan yang terlihat ikut memindahkan tampilan bulan.
+- Dua pintasan disediakan di kaki panel: **Hari Ini** dan **Kosongkan**.
+- Rentang tanggal saling membatasi: pada pasangan "Dari"–"Sampai", nilai yang
+  satu menjadi `min` atau `max` bagi yang lain sehingga rentang terbalik tidak
+  mungkin terbentuk.
+
 ### 6.5 Form Quick Entry
 
 - Input field: border 1.5px solid, radius 0, focus ring 2px warna signal dengan offset 2px.
