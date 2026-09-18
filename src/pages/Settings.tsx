@@ -12,6 +12,7 @@ import {
 } from '@/repositories/demoData'
 import { estimateUsage } from '@/repositories/storage'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
+import { DEMO_URL, REPO_URL } from '@/lib/links'
 import {
   agingReceivables,
   ghostExpenses,
@@ -502,6 +503,25 @@ export default function Settings() {
             Data akan hilang bila data situs dibersihkan, peramban dipasang ulang, atau mode privat
             ditutup. Ekspor cadangan secara berkala.
           </p>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="btn-ghost min-h-[40px]"
+            >
+              Kode Sumber (GitHub) &#8599;
+            </a>
+            <a
+              href={DEMO_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="btn-ghost min-h-[40px]"
+            >
+              Demo Langsung &#8599;
+            </a>
+          </div>
         </div>
       </div>
 

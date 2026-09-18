@@ -436,3 +436,99 @@ export function dashboardSummary(now: Date = new Date()): DashboardSummary {
     month: currentMonth,
   }
 }
+
+// ---------------------------------------------------------------------------
+// Neraca Saldo (Trial Balance)
+// ---------------------------------------------------------------------------
+
+export interface TrialBalanceLine {
+  accountId: string
+  code: string
+  name: string
+  type: Account['type']
+  /** Akumulasi sisi debit akun ini. */
+  debit: number
+  /** Akumulasi sisi kredit akun ini. */
+  credit: number
+}
+
+export interface TrialBalance {
+  lines: TrialBalanceLine[]
+  totalDebit: number
+  totalCredit: number
+  /** `totalDebit - totalCredit`; wajib nol pada buku besar yang sehat. */
+  difference: number
+  isBalanced: boolean
+  /** Jumlah baris ledger yang diikutsertakan dalam penjumlahan. */
+  entryCount: number
+}
+
+/**
+ * Menyusun neraca saldo langsung dari baris ledger, bukan dari `currentBalance`
+ * yang tersimpan pada akun.
+ *
+ * Perbedaan ini yang membuat laporan berfungsi sebagai alat pembuktian: saldo
+ * tersimpan adalah nilai turunan yang dapat menyimpang bila penyimpanan
+ * disunting dari luar aplikasi, sedangkan penjumlahan ulang atas seluruh baris
+ * ledger hanya akan seimbang apabila setiap transaksi memang diposting
+ * berpasangan. Karena itu `totalDebit` dan `totalCredit` di sini merupakan
+ * pemeriksaan independen terhadap invarian yang ditegakkan `assertBalanced`
+ * pada saat penulisan.
+ *
+ * Baris transaksi berstatus VOID tetap dihitung: buku besar bersifat
+ * append-only, pembatalan diwujudkan sebagai jurnal pembalik, dan kedua sisi
+ * tersebut sama-sama merupakan fakta historis yang harus tetap seimbang.
+ */
+export function trialBalance(asOf?: string): TrialBalance {
+  const accounts = new Map<string, Account>()
+  for (const a of getAccounts()) accounts.set(a.id, a)
+  const transactions = new Map<string, Transaction>()
+  for (const t of getTransactions()) transactions.set(t.id, t)
+
+  const limit = asOf ? dateOf(asOf) : null
+  const acc = new Map<string, TrialBalanceLine>()
+  let totalDebit = 0
+  let totalCredit = 0
+  let entryCount = 0
+
+  for (const e of [...getLedgerEntries()].sort((a, b) => a.sequenceNum - b.sequenceNum)) {
+    const account = accounts.get(e.accountId)
+    const tx = transactions.get(e.transactionId)
+    if (!account || !tx) continue
+    if (limit && dateOf(tx.transactionDate) > limit) continue
+
+    let line = acc.get(e.accountId)
+    if (!line) {
+      line = {
+        accountId: account.id,
+        code: account.code,
+        name: account.name,
+        type: account.type,
+        debit: 0,
+        credit: 0,
+      }
+      acc.set(e.accountId, line)
+    }
+
+    if (e.entryType === 'DEBIT') {
+      line.debit += e.amount
+      totalDebit += e.amount
+    } else {
+      line.credit += e.amount
+      totalCredit += e.amount
+    }
+    entryCount += 1
+  }
+
+  const lines = [...acc.values()].sort((a, b) => a.code.localeCompare(b.code))
+  const difference = totalDebit - totalCredit
+
+  return {
+    lines,
+    totalDebit,
+    totalCredit,
+    difference,
+    isBalanced: difference === 0,
+    entryCount,
+  }
+}

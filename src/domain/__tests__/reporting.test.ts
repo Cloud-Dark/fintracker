@@ -1,6 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { bootstrap, getAccounts } from '@/repositories/db'
+import {
+  bootstrap,
+  getAccounts,
+  getLedgerEntries,
+  getTransactions,
+  resetAll,
+} from '@/repositories/db'
+import { KEYS, writeObject } from '@/repositories/storage'
+import { loadDemoData } from '@/repositories/demoData'
 import { postTransaction, reverseTransaction } from '@/domain/kernel'
 import {
   balanceSheet,
@@ -8,6 +16,7 @@ import {
   dashboardSummary,
   generalLedger,
   profitAndLoss,
+  trialBalance,
 } from '@/domain/reporting'
 
 function accountId(code: string): string {
@@ -253,5 +262,64 @@ describe('dashboardSummary (FR-020)', () => {
     expect(summary.monthExpense).toBe(3_500_000)
     expect(summary.transactionCount).toBe(5)
     expect(summary.assetBalances.map((l) => l.code)).toEqual(['10100', '10200', '10300'])
+  })
+})
+
+describe('trialBalance sebagai alat pembuktian debit-kredit', () => {
+  beforeEach(() => {
+    resetAll()
+  })
+
+  it('menghasilkan total debit sama dengan total kredit', async () => {
+    await loadDemoData()
+    const tb = trialBalance()
+
+    expect(tb.totalDebit).toBe(tb.totalCredit)
+    expect(tb.difference).toBe(0)
+    expect(tb.isBalanced).toBe(true)
+    expect(tb.totalDebit).toBeGreaterThan(0)
+  })
+
+  it('menjumlahkan seluruh baris ledger tanpa ada yang terlewat', async () => {
+    await loadDemoData()
+    const tb = trialBalance()
+
+    expect(tb.entryCount).toBe(getLedgerEntries().length)
+  })
+
+  it('menghitung ulang dari baris ledger, bukan dari saldo tersimpan', async () => {
+    await loadDemoData()
+    const before = trialBalance()
+
+    // Saldo tersimpan pada akun sengaja dirusak. Neraca saldo tidak boleh
+    // terpengaruh karena ia menjumlahkan ulang dari baris ledger.
+    const accounts = getAccounts().map((a) => ({ ...a, currentBalance: 999_999_999 }))
+    writeObject(KEYS.accounts, accounts)
+
+    const after = trialBalance()
+    expect(after.totalDebit).toBe(before.totalDebit)
+    expect(after.totalCredit).toBe(before.totalCredit)
+    expect(after.isBalanced).toBe(true)
+  })
+
+  it('tetap seimbang setelah transaksi dibalik', async () => {
+    await loadDemoData()
+    const target = getTransactions()[0]
+    await reverseTransaction(target.id)
+
+    const tb = trialBalance()
+    // Jurnal pembalik menambah sepasang baris; keseimbangan harus bertahan.
+    expect(tb.isBalanced).toBe(true)
+    expect(tb.entryCount).toBe(getLedgerEntries().length)
+  })
+
+  it('menghormati batas tanggal asOf', async () => {
+    await loadDemoData()
+    const full = trialBalance()
+    const partial = trialBalance('1970-01-01')
+
+    expect(partial.entryCount).toBe(0)
+    expect(partial.isBalanced).toBe(true)
+    expect(full.entryCount).toBeGreaterThan(partial.entryCount)
   })
 })

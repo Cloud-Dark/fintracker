@@ -1,5 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import SectionHeader from '@/components/ui/SectionHeader'
+import Badge from '@/components/ui/Badge'
+import DataTable, { type Column } from '@/components/ui/DataTable'
+import { verifyChain, type ChainVerification } from '@/domain/kernel'
 import {
   balanceSheet,
   cashFlow,
@@ -8,19 +11,43 @@ import {
   type CashFlow,
   type CashFlowActivity,
   type CashFlowItem,
+  trialBalance,
   type ProfitAndLoss,
   type ReportLine,
+  type TrialBalance,
+  type TrialBalanceLine,
 } from '@/domain/reporting'
 import { formatIDR } from '@/lib/money'
 import { endOfMonth, formatDateID, startOfMonth, toISODate } from '@/lib/date'
 
-type TabKey = 'laba-rugi' | 'neraca' | 'arus-kas'
+type TabKey = 'laba-rugi' | 'neraca' | 'arus-kas' | 'neraca-saldo'
 type PeriodKey = 'bulan-ini' | 'bulan-lalu' | 'tahun-ini' | 'kustom'
 
 const TABS: ReadonlyArray<{ key: TabKey; label: string }> = [
   { key: 'laba-rugi', label: 'Laba Rugi' },
   { key: 'neraca', label: 'Neraca' },
   { key: 'arus-kas', label: 'Arus Kas' },
+  { key: 'neraca-saldo', label: 'Neraca Saldo' },
+]
+
+const TRIAL_BALANCE_COLUMNS: ReadonlyArray<Column<TrialBalanceLine>> = [
+  { key: 'code', header: 'Kode', className: 'num font-mono whitespace-nowrap' },
+  { key: 'name', header: 'Nama Akun' },
+  { key: 'type', header: 'Tipe', className: 'font-mono text-[0.625rem] uppercase' },
+  {
+    key: 'debit',
+    header: 'Debit',
+    align: 'right',
+    render: (row) => (row.debit === 0 ? '—' : formatIDR(row.debit)),
+    className: 'whitespace-nowrap',
+  },
+  {
+    key: 'credit',
+    header: 'Kredit',
+    align: 'right',
+    render: (row) => (row.credit === 0 ? '—' : formatIDR(row.credit)),
+    className: 'whitespace-nowrap',
+  },
 ]
 
 const PERIODS: ReadonlyArray<{ key: PeriodKey; label: string }> = [
@@ -152,6 +179,29 @@ export default function Reports() {
   const pnl: ProfitAndLoss = useMemo(() => profitAndLoss(range), [range])
   const sheet: BalanceSheet = useMemo(() => balanceSheet(range.to), [range])
   const flow: CashFlow = useMemo(() => cashFlow(range), [range])
+  const tb: TrialBalance = useMemo(() => trialBalance(range.to), [range])
+
+  // Verifikasi rantai hash dijalankan saat tab Neraca Saldo dibuka, agar kedua
+  // lapis pembuktian — keseimbangan aritmetika dan keutuhan urutan — tampil
+  // berdampingan dan dapat dinilai bersama.
+  const [chain, setChain] = useState<ChainVerification | null>(null)
+  const [chainRunning, setChainRunning] = useState(false)
+
+  useEffect(() => {
+    if (tab !== 'neraca-saldo') return
+    let batal = false
+    setChainRunning(true)
+    void verifyChain()
+      .then((hasil) => {
+        if (!batal) setChain(hasil)
+      })
+      .finally(() => {
+        if (!batal) setChainRunning(false)
+      })
+    return () => {
+      batal = true
+    }
+  }, [tab, range])
 
   const periodLabel = `${formatDateID(range.from)} — ${formatDateID(range.to)}`
 
@@ -192,6 +242,22 @@ export default function Reports() {
       ['Selisih', sheet.difference],
     ]
     downloadCsv(`neraca-${range.to}.csv`, table)
+  }
+
+  const exportTrialBalance = () => {
+    const table: Array<Array<string | number>> = [
+      ['Neraca Saldo'],
+      ['Per tanggal', range.to],
+      [],
+      ['Kode', 'Nama Akun', 'Debit', 'Kredit'],
+      ...tb.lines.map((l) => [l.code, l.name, l.debit, l.credit]),
+      [],
+      ['', 'TOTAL', tb.totalDebit, tb.totalCredit],
+      ['', 'Selisih', tb.difference],
+      ['', 'Seimbang', tb.isBalanced ? 'YA' : 'TIDAK'],
+      ['', 'Baris ledger diperiksa', tb.entryCount],
+    ]
+    downloadCsv(`neraca-saldo-${range.to}.csv`, table)
   }
 
   const exportFlow = () => {
@@ -484,6 +550,105 @@ export default function Reports() {
                     </div>
                   ))
                 )}
+              </div>
+            </div>
+          </ReportPanel>
+        </div>
+      )}
+
+      {tab === 'neraca-saldo' && (
+        <div role="tabpanel" id="panel-neraca-saldo" aria-labelledby="tab-neraca-saldo">
+          <ReportPanel
+            title="Neraca Saldo"
+            meta={`Per ${formatDateID(range.to)}`}
+            onExport={exportTrialBalance}
+          >
+            <div className="space-y-6">
+              <p className="max-w-prose text-sm text-muted-foreground">
+                Neraca saldo menjumlahkan ulang seluruh baris buku besar langsung dari jurnal,
+                bukan dari saldo yang tersimpan pada akun. Total Debit dan total Kredit hanya
+                akan sama apabila setiap transaksi benar-benar diposting berpasangan, sehingga
+                laporan ini berfungsi sebagai pemeriksaan independen atas invarian yang
+                ditegakkan saat penulisan.
+              </p>
+
+              {/* Dua lapis pembuktian berdampingan: aritmetika dan keutuhan urutan. */}
+              <div className="grid gap-px border border-border bg-border sm:grid-cols-2">
+                <div className="bg-card p-4">
+                  <p className="kicker mb-2">Uji 1 — Keseimbangan Aritmetika</p>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    Total Debit dikurangi total Kredit atas{' '}
+                    <span className="num font-mono text-foreground">{tb.entryCount}</span> baris
+                    jurnal.
+                  </p>
+                  <p className="num mb-3 font-mono text-2xl font-bold text-foreground">
+                    {formatIDR(tb.difference)}
+                  </p>
+                  <Badge variant={tb.isBalanced ? 'posted' : 'void'}>
+                    {tb.isBalanced ? 'Seimbang' : '! Tidak Seimbang'}
+                  </Badge>
+                </div>
+
+                <div className="bg-card p-4">
+                  <p className="kicker mb-2">Uji 2 — Keutuhan Rantai Hash</p>
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    Setiap baris menautkan hash SHA-256 baris sebelumnya; penyisipan atau
+                    penyuntingan akan memutus rantai.
+                  </p>
+                  <p className="num mb-3 font-mono text-2xl font-bold text-foreground">
+                    {chain ? chain.checked : '—'}
+                  </p>
+                  <Badge variant={chainRunning ? 'neutral' : chain?.valid ? 'posted' : 'void'}>
+                    {chainRunning
+                      ? 'Memeriksa…'
+                      : chain?.valid
+                        ? 'Rantai Utuh'
+                        : chain
+                          ? '! Rantai Rusak'
+                          : 'Belum Diperiksa'}
+                  </Badge>
+                </div>
+              </div>
+
+              <DataTable
+                columns={TRIAL_BALANCE_COLUMNS}
+                rows={tb.lines}
+                getRowKey={(row) => row.accountId}
+                caption={`${tb.lines.length} akun bersaldo pada rentang terpilih`}
+                emptyTitle="Belum ada baris jurnal"
+                emptyDescription="Catat transaksi terlebih dahulu untuk menyusun neraca saldo."
+                paginate
+                initialPageSize={25}
+                itemLabel="akun"
+                maxBodyHeight="60vh"
+                resetKey={range.to}
+              />
+
+              {/* Baris total ditempatkan di luar tabel agar tidak ikut terpotong halaman. */}
+              <div className="border border-border bg-card">
+                <div className="flex items-baseline justify-between gap-4 border-b border-rule/30 px-4 py-3">
+                  <span className="kicker">Total Debit</span>
+                  <span className="num font-mono font-bold text-foreground">
+                    {formatIDR(tb.totalDebit)}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between gap-4 border-b border-rule/30 px-4 py-3">
+                  <span className="kicker">Total Kredit</span>
+                  <span className="num font-mono font-bold text-foreground">
+                    {formatIDR(tb.totalCredit)}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between gap-4 px-4 py-3">
+                  <span className="kicker">Selisih</span>
+                  <span
+                    className={[
+                      'num font-mono font-bold',
+                      tb.isBalanced ? 'text-foreground' : 'text-negative',
+                    ].join(' ')}
+                  >
+                    {formatIDR(tb.difference)}
+                  </span>
+                </div>
               </div>
             </div>
           </ReportPanel>
