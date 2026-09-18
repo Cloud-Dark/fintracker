@@ -2,7 +2,13 @@
 // yang sama seperti input pengguna, bukan sekadar tertulis ke penyimpanan.
 
 import { beforeEach, describe, expect, it } from 'vitest'
-import { DEMO_TRANSACTION_COUNT, hasDemoData, loadDemoData } from '@/repositories/demoData'
+import {
+  DEMO_TRANSACTION_COUNT,
+  autoLoadDemoData,
+  hasDemoData,
+  loadDemoData,
+  suppressAutoDemo,
+} from '@/repositories/demoData'
 import { getAccounts, getLedgerEntries, getTransactions, resetAll } from '@/repositories/db'
 import { verifyChain } from '@/domain/kernel'
 import { agingReceivables, ghostExpenses, sentinelSummary } from '@/domain/sentinel'
@@ -118,5 +124,37 @@ describe('demoData', () => {
       expect(account, `akun ${code} harus ada`).toBeDefined()
       expect(account?.currentBalance, `saldo akun ${code}`).toBeGreaterThan(0)
     }
+  })
+
+  describe('autoLoadDemoData', () => {
+    it('memuat data contoh pada pemasangan baru', async () => {
+      const result = await autoLoadDemoData()
+
+      expect(result.skipped).toBe(false)
+      expect(result.posted).toBe(DEMO_TRANSACTION_COUNT)
+      expect(hasDemoData()).toBe(true)
+    })
+
+    it('tidak memuat ulang bila buku besar sudah berisi', async () => {
+      await autoLoadDemoData()
+      const second = await autoLoadDemoData()
+
+      expect(second.skipped).toBe(true)
+      expect(second.posted).toBe(0)
+      expect(getTransactions()).toHaveLength(DEMO_TRANSACTION_COUNT)
+    })
+
+    it('menghormati pilihan pengguna setelah Reset Seluruh Data', async () => {
+      await autoLoadDemoData()
+
+      // Meniru alur tombol Reset Seluruh Data pada halaman Pengaturan.
+      resetAll()
+      suppressAutoDemo()
+
+      const result = await autoLoadDemoData()
+      expect(result.skipped).toBe(true)
+      expect(result.posted).toBe(0)
+      expect(getTransactions()).toHaveLength(0)
+    })
   })
 })

@@ -10,6 +10,19 @@ klien statis.
 
 ## [Unreleased]
 
+### Changed
+
+- Data contoh kini dimuat otomatis sekali jalan pada pemasangan baru, saat buku
+  besar masih benar-benar kosong. Sebelumnya pemuatan hanya dapat dipicu manual,
+  sehingga kunjungan pertama selalu menampilkan dasbor bernilai nol seluruhnya.
+  Pemuatan otomatis tetap melewati pengguna yang pernah menjalankan Reset
+  Seluruh Data, melalui penanda `fintrack:settings:demo_opt_out`, agar tombol
+  reset tetap bermakna.
+- [20_DATABASE.md](20_DATABASE.md) seksi 10.1 dan [18_INSTALLATION.md](18_INSTALLATION.md)
+  seksi 6 disesuaikan dengan perilaku pemuatan otomatis tersebut.
+- [07_MASTER_CHECKLIST.md](07_MASTER_CHECKLIST.md): butir penerapan Cloudflare
+  Pages ditandai selesai; seluruh 61 butir checklist kini tuntas.
+
 ### Fixed
 
 - Nomor versi pada footer dan halaman Pengaturan sebelumnya ditulis tetap

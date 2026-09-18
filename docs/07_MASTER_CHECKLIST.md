@@ -87,8 +87,9 @@ Centang setiap item saat selesai dan diverifikasi.
       struktural; audit peramban nyata masih terbuka (lihat UAT temuan T-03)
 - [x] Verifikasi responsif pada 375px, 768px, 1024px, 1440px
 - [x] Konfigurasi `public/_redirects` untuk SPA fallback
-- [ ] Deploy ke Cloudflare Pages dan verifikasi URL aktif (panduan siap pada
-      [18_INSTALLATION.md](18_INSTALLATION.md); menunggu instruksi pemilik proyek)
+- [x] Deploy ke Cloudflare Pages dan verifikasi URL aktif; produksi aktif pada
+      `fintracker-dpp.pages.dev` dengan penerapan otomatis dari cabang `main`
+      sejak 2026-09-19 (panduan pada [18_INSTALLATION.md](18_INSTALLATION.md))
 
 ## Referensi
 

@@ -340,12 +340,25 @@ termasuk kode dan saldo normal masing-masing, didokumentasikan pada
 tunggal (single source of truth) — dokumen ini tidak menduplikasi daftar
 tersebut agar tidak terjadi drift antara dua dokumen.
 
-### 10.1. Data Contoh Opsional
+### 10.1. Data Contoh
 
-Terpisah dari seeding wajib di atas, aplikasi menyediakan data contoh opsional
-yang dimuat atas permintaan pengguna melalui panel "Data Contoh" pada halaman
-Pengaturan. Data ini berisi 30 transaksi peragaan sepanjang kurang lebih empat
-bulan dan tidak pernah dimuat secara otomatis.
+Terpisah dari seeding wajib di atas, aplikasi menyediakan data contoh berisi 30
+transaksi peragaan sepanjang kurang lebih empat bulan. Data ini dimuat melalui
+dua jalur:
+
+1. **Otomatis pada pemasangan baru.** Saat aplikasi pertama kali dibuka dan buku
+   besar masih benar-benar kosong, data contoh dimuat sekali jalan agar dasbor,
+   laporan, dan peringatan sentinel tidak tampil nol seluruhnya.
+2. **Manual melalui panel "Data Contoh"** pada halaman Pengaturan, untuk memuat
+   kembali data contoh pada buku besar yang telah dikosongkan.
+
+Pemuatan otomatis dilewati apabila pengguna pernah menjalankan Reset Seluruh
+Data pada peramban tersebut. Reset menuliskan penanda `fintrack:settings:demo_opt_out`,
+dan selama penanda itu ada, data contoh tidak pernah dimuat ulang secara
+otomatis. Tanpa penanda tersebut Reset Seluruh Data akan selalu diikuti pemuatan
+ulang data contoh sehingga kehilangan maknanya. Penanda ini berada di luar
+`ALL_KEYS`, sehingga tidak ikut terhapus oleh `resetAll()` dan tidak ikut dalam
+ekspor maupun impor cadangan.
 
 Pembeda pentingnya dari seeding: seluruh transaksi contoh diposting melalui
 `postTransaction` pada kernel akuntansi, bukan ditulis langsung ke
