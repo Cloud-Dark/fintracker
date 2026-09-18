@@ -20,7 +20,8 @@ Centang setiap item saat selesai dan diverifikasi.
 - [x] Verifikasi `npm run dev` berjalan tanpa galat konsol
 - [x] Verifikasi `npm run build` menghasilkan `dist/` tanpa galat
 - [x] Tambahkan `.gitignore` untuk `node_modules`, `dist`, berkas lokal
-- [ ] Commit awal scaffolding dengan pesan yang jelas (menunggu instruksi pemilik proyek)
+- [x] Commit awal scaffolding dengan pesan yang jelas; riwayat didorong ke
+      remote `origin/main` pada 2026-09-19
 
 ## Fase 1 — Persistence Layer
 
