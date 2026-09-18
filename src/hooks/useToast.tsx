@@ -1,4 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import { ToastViewport, type ToastItem, type ToastVariant } from '@/components/ui/Toast'
 
 export type ToastInput = {
@@ -36,11 +45,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       setToasts((prev) => [...prev, { id, title, description, variant }])
       timers.current.set(
         id,
-        setTimeout(() => dismiss(id), AUTO_DISMISS_MS),
+        setTimeout(() => dismiss(id), AUTO_DISMISS_MS)
       )
       return id
     },
-    [dismiss],
+    [dismiss]
   )
 
   useEffect(() => {
@@ -51,7 +60,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const value = useMemo<ToastContextValue>(() => ({ toasts, push, dismiss }), [toasts, push, dismiss])
+  const value = useMemo<ToastContextValue>(
+    () => ({ toasts, push, dismiss }),
+    [toasts, push, dismiss]
+  )
 
   return (
     <ToastContext.Provider value={value}>

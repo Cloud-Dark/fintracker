@@ -22,7 +22,12 @@ const MUTATION_LABEL: Record<MutationType, string> = {
   DEBT_PAYMENT: 'Bayar Utang',
 }
 
-const MUTATION_VALUES: ReadonlyArray<MutationType> = ['INCOME', 'EXPENSE', 'TRANSFER', 'DEBT_PAYMENT']
+const MUTATION_VALUES: ReadonlyArray<MutationType> = [
+  'INCOME',
+  'EXPENSE',
+  'TRANSFER',
+  'DEBT_PAYMENT',
+]
 const STATUS_VALUES: ReadonlyArray<TransactionStatus> = ['POSTED', 'DRAFT', 'VOID']
 
 /** Arah mutasi menentukan tanda dan warna nominal. */
@@ -73,7 +78,11 @@ export default function Transactions() {
         if (needle !== '' && !tx.description.toLowerCase().includes(needle)) return false
         return true
       })
-      .sort((a, b) => b.transactionDate.localeCompare(a.transactionDate) || b.createdAt.localeCompare(a.createdAt))
+      .sort(
+        (a, b) =>
+          b.transactionDate.localeCompare(a.transactionDate) ||
+          b.createdAt.localeCompare(a.createdAt)
+      )
   }, [transactions, month, mutationFilter, statusFilter, search])
 
   /** Akun kas/bank yang terlibat, ditampilkan sebagai kolom Akun. */
@@ -99,7 +108,9 @@ export default function Transactions() {
     {
       key: 'transactionDate',
       header: 'Tanggal',
-      render: (row) => <span className="num whitespace-nowrap">{formatDateID(row.transactionDate)}</span>,
+      render: (row) => (
+        <span className="num whitespace-nowrap">{formatDateID(row.transactionDate)}</span>
+      ),
     },
     {
       key: 'description',
@@ -116,7 +127,9 @@ export default function Transactions() {
       render: (row) => (
         <span className="text-sm">
           {categoryById.get(row.categoryId)?.name ?? (
-            <span className="font-mono text-xs text-muted-foreground">{MUTATION_LABEL[row.mutationType]}</span>
+            <span className="font-mono text-xs text-muted-foreground">
+              {MUTATION_LABEL[row.mutationType]}
+            </span>
           )}
         </span>
       ),
@@ -124,7 +137,9 @@ export default function Transactions() {
     {
       key: 'account',
       header: 'Akun',
-      render: (row) => <span className="num font-mono text-xs text-muted-foreground">{accountLabel(row)}</span>,
+      render: (row) => (
+        <span className="num font-mono text-xs text-muted-foreground">{accountLabel(row)}</span>
+      ),
     },
     {
       key: 'status',
@@ -137,8 +152,13 @@ export default function Transactions() {
       align: 'right',
       render: (row) => {
         const signed = signedAmount(row)
-        const tone = signed > 0 ? 'text-positive' : signed < 0 ? 'text-negative' : 'text-muted-foreground'
-        return <span className={`num whitespace-nowrap ${tone}`}>{formatIDR(signed === 0 ? row.amount : signed)}</span>
+        const tone =
+          signed > 0 ? 'text-positive' : signed < 0 ? 'text-negative' : 'text-muted-foreground'
+        return (
+          <span className={`num whitespace-nowrap ${tone}`}>
+            {formatIDR(signed === 0 ? row.amount : signed)}
+          </span>
+        )
       },
     },
     {
@@ -168,7 +188,11 @@ export default function Transactions() {
         title="Riwayat mutasi tercatat"
         description="Seluruh jurnal yang pernah diposting. Koreksi dilakukan dengan menerbitkan jurnal pembalik, bukan menghapus baris."
         action={
-          <button type="button" className="btn-primary min-h-[40px]" onClick={() => setEntryOpen(true)}>
+          <button
+            type="button"
+            className="btn-primary min-h-[40px]"
+            onClick={() => setEntryOpen(true)}
+          >
             Catat Transaksi
           </button>
         }
@@ -254,7 +278,11 @@ export default function Transactions() {
         emptyTitle="Tidak ada transaksi yang cocok"
         emptyDescription="Ubah filter di atas, atau catat transaksi baru untuk mengisi buku besar."
         emptyAction={
-          <button type="button" className="btn-primary min-h-[40px]" onClick={() => setEntryOpen(true)}>
+          <button
+            type="button"
+            className="btn-primary min-h-[40px]"
+            onClick={() => setEntryOpen(true)}
+          >
             Catat Transaksi
           </button>
         }
@@ -281,7 +309,11 @@ export default function Transactions() {
         description="Transaksi asal tidak dihapus. Statusnya berubah menjadi VOID dan sistem menerbitkan jurnal pembalik dengan sisi Debit/Kredit yang ditukar, sehingga efek bersihnya nol dan jejak audit tetap utuh."
         actions={
           <>
-            <button type="button" className="btn-ghost min-h-[40px]" onClick={() => setReversalTarget(null)}>
+            <button
+              type="button"
+              className="btn-ghost min-h-[40px]"
+              onClick={() => setReversalTarget(null)}
+            >
               Batal
             </button>
             <button
@@ -299,7 +331,9 @@ export default function Transactions() {
           <dl className="border border-border">
             <div className="flex items-baseline justify-between gap-4 border-b border-rule/30 px-4 py-3">
               <dt className="kicker">Tanggal</dt>
-              <dd className="num font-mono text-sm">{formatDateID(reversalTarget.transactionDate)}</dd>
+              <dd className="num font-mono text-sm">
+                {formatDateID(reversalTarget.transactionDate)}
+              </dd>
             </div>
             <div className="flex items-baseline justify-between gap-4 border-b border-rule/30 px-4 py-3">
               <dt className="kicker">Deskripsi</dt>

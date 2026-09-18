@@ -34,16 +34,16 @@ ada pada [04_TRD.md](04_TRD.md) dan [05_ARCHITECTURE.md](05_ARCHITECTURE.md).
 
 ## 2. Daftar Kunci localStorage
 
-| Kunci | Bentuk | Deskripsi |
-|---|---|---|
-| `fintrack:v1:meta` | objek | Metadata skema: versi skema, sequence number ledger terakhir, tanda waktu seeding. |
-| `fintrack:v1:accounts` | array | Daftar akun Chart of Accounts (padanan tabel `accounts`). |
-| `fintrack:v1:categories` | array | Daftar kategori transaksi (padanan tabel `categories`). |
-| `fintrack:v1:transactions` | array | Header transaksi (padanan tabel `transactions`). |
-| `fintrack:v1:ledger_entries` | array | Baris buku besar double-entry, append-only (padanan tabel `ledger_entries`). |
-| `fintrack:v1:attachments` | array | Metadata bukti bayar/lampiran yang tertaut ke transaksi. |
-| `fintrack:v1:reconciliations` | array | Catatan hasil rekonsiliasi bank dua arah. |
-| `fintrack:v1:settings` | objek | Preferensi pengguna dan konfigurasi aplikasi (non-akuntansi). |
+| Kunci                         | Bentuk | Deskripsi                                                                          |
+| ----------------------------- | ------ | ---------------------------------------------------------------------------------- |
+| `fintrack:v1:meta`            | objek  | Metadata skema: versi skema, sequence number ledger terakhir, tanda waktu seeding. |
+| `fintrack:v1:accounts`        | array  | Daftar akun Chart of Accounts (padanan tabel `accounts`).                          |
+| `fintrack:v1:categories`      | array  | Daftar kategori transaksi (padanan tabel `categories`).                            |
+| `fintrack:v1:transactions`    | array  | Header transaksi (padanan tabel `transactions`).                                   |
+| `fintrack:v1:ledger_entries`  | array  | Baris buku besar double-entry, append-only (padanan tabel `ledger_entries`).       |
+| `fintrack:v1:attachments`     | array  | Metadata bukti bayar/lampiran yang tertaut ke transaksi.                           |
+| `fintrack:v1:reconciliations` | array  | Catatan hasil rekonsiliasi bank dua arah.                                          |
+| `fintrack:v1:settings`        | objek  | Preferensi pengguna dan konfigurasi aplikasi (non-akuntansi).                      |
 
 Setiap kunci berisi string JSON hasil `JSON.stringify` dari nilai bertipe
 sebagaimana didefinisikan pada bagian 3. Tidak ada normalisasi lintas kunci
@@ -58,15 +58,15 @@ bukan oleh `localStorage`).
 
 ```ts
 interface Account {
-  id: string;               // UUIDv7, padanan `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-  code: string;              // padanan `code VARCHAR(32) UNIQUE NOT NULL`
-  name: string;               // padanan `name VARCHAR(128) NOT NULL`
-  type: 'ASSET' | 'LIABILITY' | 'EQUITY' | 'REVENUE' | 'EXPENSE'; // padanan CHECK constraint pada `type`
-  currency: 'IDR';             // padanan `currency VARCHAR(3) NOT NULL DEFAULT 'IDR'`
-  currentBalance: number;      // integer, satuan rupiah utuh; padanan `current_balance BIGINT NOT NULL DEFAULT 0`
-  isActive: boolean;           // padanan `is_active BOOLEAN NOT NULL DEFAULT TRUE`
-  createdAt: string;           // ISO 8601; padanan `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
-  updatedAt: string;           // ISO 8601; padanan `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
+  id: string // UUIDv7, padanan `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
+  code: string // padanan `code VARCHAR(32) UNIQUE NOT NULL`
+  name: string // padanan `name VARCHAR(128) NOT NULL`
+  type: 'ASSET' | 'LIABILITY' | 'EQUITY' | 'REVENUE' | 'EXPENSE' // padanan CHECK constraint pada `type`
+  currency: 'IDR' // padanan `currency VARCHAR(3) NOT NULL DEFAULT 'IDR'`
+  currentBalance: number // integer, satuan rupiah utuh; padanan `current_balance BIGINT NOT NULL DEFAULT 0`
+  isActive: boolean // padanan `is_active BOOLEAN NOT NULL DEFAULT TRUE`
+  createdAt: string // ISO 8601; padanan `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
+  updatedAt: string // ISO 8601; padanan `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
 }
 ```
 
@@ -74,13 +74,13 @@ interface Account {
 
 ```ts
 interface Category {
-  id: string;                          // UUIDv7; padanan `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-  name: string;                        // padanan `name VARCHAR(128) NOT NULL`
-  type: 'INCOME' | 'EXPENSE';          // padanan CHECK constraint pada `type`
-  parentId: string | null;             // padanan `parent_id UUID REFERENCES categories(id) ON DELETE SET NULL`
-  defaultAccountCode: string;          // ekstensi kernel klien: `code` Account tujuan default saat kategori dipakai
-  isActive: boolean;                   // padanan `is_active BOOLEAN NOT NULL DEFAULT TRUE`
-  updatedAt: string;                   // ISO 8601; padanan `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
+  id: string // UUIDv7; padanan `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
+  name: string // padanan `name VARCHAR(128) NOT NULL`
+  type: 'INCOME' | 'EXPENSE' // padanan CHECK constraint pada `type`
+  parentId: string | null // padanan `parent_id UUID REFERENCES categories(id) ON DELETE SET NULL`
+  defaultAccountCode: string // ekstensi kernel klien: `code` Account tujuan default saat kategori dipakai
+  isActive: boolean // padanan `is_active BOOLEAN NOT NULL DEFAULT TRUE`
+  updatedAt: string // ISO 8601; padanan `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
 }
 ```
 
@@ -93,22 +93,22 @@ akun default saat pengguna memilih kategori pada formulir transaksi.
 
 ```ts
 interface Transaction {
-  id: string;                    // UUIDv7 dari klien; padanan `id UUID PRIMARY KEY` (bukan default gen_random_uuid, sesuai DDL asli)
-  clientTxId: string;            // padanan `client_tx_id VARCHAR(64) UNIQUE NOT NULL`
-  transactionDate: string;       // ISO 8601; padanan `transaction_date TIMESTAMPTZ NOT NULL`
-  description: string;           // padanan `description TEXT NOT NULL`
-  categoryId: string;            // padanan `category_id UUID REFERENCES categories(id) ON DELETE RESTRICT`
-  mutationType: 'INCOME' | 'EXPENSE' | 'TRANSFER' | 'DEBT_PAYMENT'; // ekstensi klien, lihat catatan di bawah
-  amount: number;                // integer, satuan rupiah utuh
-  sourceAccountId: string;       // akun sumber (sisi kredit pada arus keluar)
-  destinationAccountId: string;  // akun tujuan (sisi debit pada arus masuk)
-  status: 'DRAFT' | 'POSTED' | 'VOID'; // padanan `status VARCHAR(16) NOT NULL DEFAULT 'POSTED' CHECK (...)`
-  reversesTransactionId: string | null; // ekstensi klien: menandai transaksi ini sebagai pembalik transaksi lain
-  attachmentId: string | null;   // tautan ke Attachment, mendukung aturan Ghost Expense Tagging
-  isVerified: boolean;           // ekstensi klien: bukti bayar terlampir untuk pengeluaran > Rp 1.000.000
-  syncVersion: number;           // padanan `sync_version BIGINT NOT NULL`
-  createdAt: string;             // ISO 8601; padanan `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
-  updatedAt: string;             // ISO 8601; padanan `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
+  id: string // UUIDv7 dari klien; padanan `id UUID PRIMARY KEY` (bukan default gen_random_uuid, sesuai DDL asli)
+  clientTxId: string // padanan `client_tx_id VARCHAR(64) UNIQUE NOT NULL`
+  transactionDate: string // ISO 8601; padanan `transaction_date TIMESTAMPTZ NOT NULL`
+  description: string // padanan `description TEXT NOT NULL`
+  categoryId: string // padanan `category_id UUID REFERENCES categories(id) ON DELETE RESTRICT`
+  mutationType: 'INCOME' | 'EXPENSE' | 'TRANSFER' | 'DEBT_PAYMENT' // ekstensi klien, lihat catatan di bawah
+  amount: number // integer, satuan rupiah utuh
+  sourceAccountId: string // akun sumber (sisi kredit pada arus keluar)
+  destinationAccountId: string // akun tujuan (sisi debit pada arus masuk)
+  status: 'DRAFT' | 'POSTED' | 'VOID' // padanan `status VARCHAR(16) NOT NULL DEFAULT 'POSTED' CHECK (...)`
+  reversesTransactionId: string | null // ekstensi klien: menandai transaksi ini sebagai pembalik transaksi lain
+  attachmentId: string | null // tautan ke Attachment, mendukung aturan Ghost Expense Tagging
+  isVerified: boolean // ekstensi klien: bukti bayar terlampir untuk pengeluaran > Rp 1.000.000
+  syncVersion: number // padanan `sync_version BIGINT NOT NULL`
+  createdAt: string // ISO 8601; padanan `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
+  updatedAt: string // ISO 8601; padanan `updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
 }
 ```
 
@@ -124,16 +124,16 @@ tanpa join lintas tabel tambahan.
 
 ```ts
 interface LedgerEntry {
-  id: string;                 // UUIDv7; padanan `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-  transactionId: string;      // padanan `transaction_id UUID NOT NULL REFERENCES transactions(id) ON DELETE RESTRICT`
-  accountId: string;          // padanan `account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE RESTRICT`
-  entryType: 'DEBIT' | 'CREDIT'; // padanan CHECK constraint pada `entry_type`
-  amount: number;              // integer > 0, satuan rupiah utuh; padanan `amount BIGINT NOT NULL CHECK (amount > 0)`
-  runningBalance: number;      // padanan `running_balance BIGINT NOT NULL`
-  sequenceNum: number;         // padanan `sequence_num BIGINT NOT NULL`, monotonic global
-  prevHash: string;            // 64 karakter heksadesimal; padanan `prev_hash CHAR(64) NOT NULL`
-  entryHash: string;           // 64 karakter heksadesimal; padanan `entry_hash CHAR(64) NOT NULL`
-  createdAt: string;           // ISO 8601; padanan `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
+  id: string // UUIDv7; padanan `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
+  transactionId: string // padanan `transaction_id UUID NOT NULL REFERENCES transactions(id) ON DELETE RESTRICT`
+  accountId: string // padanan `account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE RESTRICT`
+  entryType: 'DEBIT' | 'CREDIT' // padanan CHECK constraint pada `entry_type`
+  amount: number // integer > 0, satuan rupiah utuh; padanan `amount BIGINT NOT NULL CHECK (amount > 0)`
+  runningBalance: number // padanan `running_balance BIGINT NOT NULL`
+  sequenceNum: number // padanan `sequence_num BIGINT NOT NULL`, monotonic global
+  prevHash: string // 64 karakter heksadesimal; padanan `prev_hash CHAR(64) NOT NULL`
+  entryHash: string // 64 karakter heksadesimal; padanan `entry_hash CHAR(64) NOT NULL`
+  createdAt: string // ISO 8601; padanan `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`
 }
 ```
 
@@ -141,9 +141,9 @@ interface LedgerEntry {
 
 ```ts
 interface Meta {
-  schemaVersion: number;   // versi skema saat ini, dipakai fungsi migrate berantai
-  lastSequenceNum: number; // sequence_num global terakhir yang terpakai pada ledger_entries
-  seededAt: string | null; // ISO 8601, waktu Chart of Accounts & kategori default pertama kali di-seed
+  schemaVersion: number // versi skema saat ini, dipakai fungsi migrate berantai
+  lastSequenceNum: number // sequence_num global terakhir yang terpakai pada ledger_entries
+  seededAt: string | null // ISO 8601, waktu Chart of Accounts & kategori default pertama kali di-seed
 }
 ```
 
@@ -155,18 +155,18 @@ sequence generator database, migration table, dan seed script terpisah.
 
 ## 4. Pemetaan Fitur DDL PostgreSQL → localStorage
 
-| Fitur PostgreSQL asli | Padanan di klien | Di mana ditegakkan |
-|---|---|---|
-| `DEFAULT gen_random_uuid()` | Generator UUIDv7 lokal (`crypto.getRandomValues` + timestamp) dipanggil eksplisit sebelum insert | Repository layer, saat membuat objek baru |
-| `UNIQUE` (mis. `accounts.code`, `transactions.client_tx_id`) | Pemindaian linear/lookup Map in-memory sebelum flush; ditolak dengan error aplikasi bila duplikat | Unit-of-work, tahap `validate` |
-| `CHECK (type IN (...))` | Union type TypeScript + validasi runtime pada boundary repository (guard function) | Repository layer, tahap `validate` sebelum `stage` dikonfirmasi |
-| `CHECK (amount > 0)` | Validasi runtime eksplisit pada kernel ledger sebelum entri di-append | Kernel akuntansi (ledger service), tahap `validate` |
-| `FOREIGN KEY ... REFERENCES ... ON DELETE RESTRICT/SET NULL` | Validasi keberadaan ID target pada koleksi terkait sebelum commit; tidak ada penegakan referensial otomatis oleh storage | Repository layer, tahap `validate`, menolak commit bila referensi tidak ditemukan |
+| Fitur PostgreSQL asli                                                               | Padanan di klien                                                                                                                                | Di mana ditegakkan                                                                                                               |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `DEFAULT gen_random_uuid()`                                                         | Generator UUIDv7 lokal (`crypto.getRandomValues` + timestamp) dipanggil eksplisit sebelum insert                                                | Repository layer, saat membuat objek baru                                                                                        |
+| `UNIQUE` (mis. `accounts.code`, `transactions.client_tx_id`)                        | Pemindaian linear/lookup Map in-memory sebelum flush; ditolak dengan error aplikasi bila duplikat                                               | Unit-of-work, tahap `validate`                                                                                                   |
+| `CHECK (type IN (...))`                                                             | Union type TypeScript + validasi runtime pada boundary repository (guard function)                                                              | Repository layer, tahap `validate` sebelum `stage` dikonfirmasi                                                                  |
+| `CHECK (amount > 0)`                                                                | Validasi runtime eksplisit pada kernel ledger sebelum entri di-append                                                                           | Kernel akuntansi (ledger service), tahap `validate`                                                                              |
+| `FOREIGN KEY ... REFERENCES ... ON DELETE RESTRICT/SET NULL`                        | Validasi keberadaan ID target pada koleksi terkait sebelum commit; tidak ada penegakan referensial otomatis oleh storage                        | Repository layer, tahap `validate`, menolak commit bila referensi tidak ditemukan                                                |
 | `TRIGGER prevent_ledger_tampering` (larang `UPDATE`/`DELETE` pada `ledger_entries`) | Repository `LedgerRepository` hanya mengekspos method `append()` dan `read()`; tidak ada method `update`/`delete` pada permukaan API TypeScript | Desain antarmuka modul (compile-time) + guard runtime yang melempar `LedgerImmutableError` bila dipanggil melalui jalur internal |
-| `TIMESTAMPTZ` | String ISO 8601 UTC (`new Date().toISOString()`) | Setiap titik penulisan `createdAt`/`updatedAt` di repository layer |
-| `BIGINT` | `number` JavaScript, dibatasi pada rentang integer aman (`Number.isSafeInteger`), satuan rupiah utuh tanpa desimal | Validasi tipe pada boundary repository (TR-006) |
-| Transaksi ACID (`BEGIN`/`COMMIT`/`ROLLBACK`) | Unit-of-work in-memory dengan snapshot pra-mutasi dan flush berurutan (lihat bagian 6) | Modul `unitOfWork` di kernel akuntansi |
-| Sequence generator server (`sequence_num`) | Counter monotonic disimpan pada `fintrack:v1:meta.lastSequenceNum`, di-increment secara atomik dalam unit-of-work yang sama | Kernel ledger, tahap `stage` |
+| `TIMESTAMPTZ`                                                                       | String ISO 8601 UTC (`new Date().toISOString()`)                                                                                                | Setiap titik penulisan `createdAt`/`updatedAt` di repository layer                                                               |
+| `BIGINT`                                                                            | `number` JavaScript, dibatasi pada rentang integer aman (`Number.isSafeInteger`), satuan rupiah utuh tanpa desimal                              | Validasi tipe pada boundary repository (TR-006)                                                                                  |
+| Transaksi ACID (`BEGIN`/`COMMIT`/`ROLLBACK`)                                        | Unit-of-work in-memory dengan snapshot pra-mutasi dan flush berurutan (lihat bagian 6)                                                          | Modul `unitOfWork` di kernel akuntansi                                                                                           |
+| Sequence generator server (`sequence_num`)                                          | Counter monotonic disimpan pada `fintrack:v1:meta.lastSequenceNum`, di-increment secara atomik dalam unit-of-work yang sama                     | Kernel ledger, tahap `stage`                                                                                                     |
 
 ---
 
@@ -178,11 +178,11 @@ di memori setiap kali aplikasi dimuat (bootstrap), dengan menyisir seluruh
 isi `fintrack:v1:ledger_entries`, `fintrack:v1:transactions`, dan
 `fintrack:v1:accounts` satu kali:
 
-| Indeks | Struktur | Alasan performa |
-|---|---|---|
-| Ledger per akun | `Map<accountId, LedgerEntry[]>` | Perhitungan saldo akun dan laporan buku besar per akun (NFR-002: render laporan < 500 ms pada 10.000 baris) memerlukan akses O(1) ke seluruh entri suatu akun tanpa memindai seluruh array ledger setiap kali. |
-| Transaksi per bulan | `Map<'YYYY-MM', Transaction[]>` | Laporan P&L dan arus kas per periode adalah operasi paling sering dipanggil; pengelompokan di muka menghindari pemindaian linear seluruh riwayat transaksi pada setiap render laporan. |
-| Akun per kode | `Map<code, Account>` | Resolusi `defaultAccountCode` pada Category dan lookup akun saat entry form disubmit terjadi pada jalur interaksi pengguna (NFR-001: P99 < 16 ms), sehingga harus O(1), bukan `Array.find`. |
+| Indeks              | Struktur                        | Alasan performa                                                                                                                                                                                                |
+| ------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ledger per akun     | `Map<accountId, LedgerEntry[]>` | Perhitungan saldo akun dan laporan buku besar per akun (NFR-002: render laporan < 500 ms pada 10.000 baris) memerlukan akses O(1) ke seluruh entri suatu akun tanpa memindai seluruh array ledger setiap kali. |
+| Transaksi per bulan | `Map<'YYYY-MM', Transaction[]>` | Laporan P&L dan arus kas per periode adalah operasi paling sering dipanggil; pengelompokan di muka menghindari pemindaian linear seluruh riwayat transaksi pada setiap render laporan.                         |
+| Akun per kode       | `Map<code, Account>`            | Resolusi `defaultAccountCode` pada Category dan lookup akun saat entry form disubmit terjadi pada jalur interaksi pengguna (NFR-001: P99 < 16 ms), sehingga harus O(1), bukan `Array.find`.                    |
 
 Indeks ini adalah cache turunan (derived state), bukan sumber kebenaran.
 Sumber kebenaran tetap array mentah pada `localStorage`; indeks dibangun
@@ -350,20 +350,20 @@ penuh tersedia setiap saat). Bentuk envelope:
 
 ```ts
 interface BackupEnvelope {
-  formatVersion: 1;           // versi format berkas ekspor, independen dari schemaVersion internal
-  schemaVersion: number;      // salinan fintrack:v1:meta.schemaVersion saat ekspor dibuat
-  exportedAt: string;         // ISO 8601, waktu ekspor dibuat
-  checksum: string;           // SHA-256 atas representasi JSON dari field `data` (deteksi korupsi berkas)
+  formatVersion: 1 // versi format berkas ekspor, independen dari schemaVersion internal
+  schemaVersion: number // salinan fintrack:v1:meta.schemaVersion saat ekspor dibuat
+  exportedAt: string // ISO 8601, waktu ekspor dibuat
+  checksum: string // SHA-256 atas representasi JSON dari field `data` (deteksi korupsi berkas)
   data: {
-    meta: Meta;
-    accounts: Account[];
-    categories: Category[];
-    transactions: Transaction[];
-    ledgerEntries: LedgerEntry[];
-    attachments: unknown[];       // metadata lampiran; struktur rinci di luar cakupan dokumen ini
-    reconciliations: unknown[];   // catatan rekonsiliasi; struktur rinci di luar cakupan dokumen ini
-    settings: Record<string, unknown>;
-  };
+    meta: Meta
+    accounts: Account[]
+    categories: Category[]
+    transactions: Transaction[]
+    ledgerEntries: LedgerEntry[]
+    attachments: unknown[] // metadata lampiran; struktur rinci di luar cakupan dokumen ini
+    reconciliations: unknown[] // catatan rekonsiliasi; struktur rinci di luar cakupan dokumen ini
+    settings: Record<string, unknown>
+  }
 }
 ```
 

@@ -24,7 +24,15 @@ export default function BackToTop() {
           : 'pointer-events-none translate-y-2 opacity-0',
       ].join(' ')}
     >
-      <svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="1.5" fill="none" aria-hidden="true">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        fill="none"
+        aria-hidden="true"
+      >
         <path d="M8 13.5V2.5" />
         <path d="M3 7.5 8 2.5l5 5" />
       </svg>

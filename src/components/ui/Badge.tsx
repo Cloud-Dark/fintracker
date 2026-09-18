@@ -21,7 +21,11 @@ export default function Badge({ variant = 'neutral', children, className }: Badg
   return (
     <span className={['badge', VARIANT_CLASS[variant], className].filter(Boolean).join(' ')}>
       {/* Penanda non-warna agar status tetap terbaca tanpa persepsi warna. */}
-      {variant === 'unverified' && <span aria-hidden="true" className="mr-1 font-bold">!</span>}
+      {variant === 'unverified' && (
+        <span aria-hidden="true" className="mr-1 font-bold">
+          !
+        </span>
+      )}
       {children}
     </span>
   )

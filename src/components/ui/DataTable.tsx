@@ -47,11 +47,30 @@ export default function DataTable<T>({
   className,
 }: DataTableProps<T>) {
   if (rows.length === 0) {
-    return <EmptyState title={emptyTitle} description={emptyDescription} action={emptyAction} className={className} />
+    return (
+      <EmptyState
+        title={emptyTitle}
+        description={emptyDescription}
+        action={emptyAction}
+        className={className}
+      />
+    )
   }
 
   return (
-    <div className={['w-full overflow-x-auto border border-border bg-card', className].filter(Boolean).join(' ')}>
+    // Wadah berbingkai yang dapat digeser mendatar dan difokuskan lewat keyboard.
+    <div
+      role="region"
+      aria-label={caption ?? 'Tabel data'}
+      tabIndex={0}
+      className={[
+        'w-full overflow-x-auto border border-border bg-card',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <table className="w-full min-w-[640px] border-collapse text-sm">
         {caption && <caption className="kicker px-4 py-3 text-left">{caption}</caption>}
         <thead>

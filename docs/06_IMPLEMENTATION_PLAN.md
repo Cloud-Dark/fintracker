@@ -14,6 +14,7 @@ dan tidak boleh dimulai sebelum kriteria selesai fase sebelumnya terpenuhi.
 beserta token desain, routing, dan layout shell dasar.
 
 **Keluaran:**
+
 - Proyek Vite dapat dijalankan (`npm run dev`) dan dibangun (`npm run build`).
 - Konfigurasi TypeScript strict mode.
 - Tailwind terpasang dengan token desain sesuai [24_DESIGN_TOKEN.md](24_DESIGN_TOKEN.md).
@@ -29,6 +30,7 @@ beserta token desain, routing, dan layout shell dasar.
 **Dependensi:** Tidak ada (fase awal).
 
 **Kriteria selesai:**
+
 - `npm run dev` menampilkan layout shell tanpa galat konsol.
 - `npm run build` sukses menghasilkan `dist/`.
 - Navigasi antar rute placeholder berfungsi.
@@ -41,6 +43,7 @@ beserta token desain, routing, dan layout shell dasar.
 TR-007, TR-008, TR-010 pada [04_TRD.md](04_TRD.md).
 
 **Keluaran:**
+
 - Adapter `localStorage` dengan namespace kunci `fintrack:v1:*`.
 - Repository per koleksi (accounts, categories, transactions, ledger_entries, meta).
 - Unit-of-work: kumpulkan mutasi di memori, validasi, flush berurutan, rollback
@@ -57,6 +60,7 @@ TR-007, TR-008, TR-010 pada [04_TRD.md](04_TRD.md).
 **Dependensi:** Fase 0 selesai.
 
 **Kriteria selesai:**
+
 - Repository hanya diakses melalui lapisan ini, tidak ada akses `localStorage`
   langsung dari komponen React (diverifikasi lint/grep).
 - Unit-of-work pulih ke snapshot sebelumnya saat simulasi flush gagal (uji Vitest).
@@ -71,6 +75,7 @@ TR-007, TR-008, TR-010 pada [04_TRD.md](04_TRD.md).
 sampai TR-008 dan [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md).
 
 **Keluaran:**
+
 - Posting rules: konversi transaksi (`INCOME`, `EXPENSE`, `TRANSFER`,
   `DEBT_PAYMENT`) menjadi baris ledger debit/kredit.
 - Penegakan invarian `SUM(debit) - SUM(credit) = 0`, melempar
@@ -87,6 +92,7 @@ sampai TR-008 dan [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md).
 **Dependensi:** Fase 1 selesai (repository dan unit-of-work tersedia).
 
 **Kriteria selesai:**
+
 - Seluruh kasus uji wajib pada [12_TEST_STRATEGY.md](12_TEST_STRATEGY.md)
   bagian kernel akuntansi lulus.
 - Transaksi dengan delta bukan nol ditolak seluruhnya (tidak ada penulisan parsial).
@@ -101,6 +107,7 @@ sampai TR-008 dan [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md).
 FR-020 sampai FR-033.
 
 **Keluaran:**
+
 - Laporan Laba Rugi multi-step, Neraca (dengan penegakan
   `Aset = Liabilitas + Ekuitas`), Arus Kas direct method.
 - Buku Besar dengan filter akun, rentang tanggal, tipe entri.
@@ -118,6 +125,7 @@ FR-020 sampai FR-033.
 **Dependensi:** Fase 2 selesai (data ledger valid dan konsisten tersedia).
 
 **Kriteria selesai:**
+
 - Seluruh laporan menghasilkan angka yang konsisten dengan data ledger uji.
 - Waktu render laporan di bawah 500 ms pada 10.000 baris ledger (NFR-002).
 - Sentinel menghasilkan peringatan sesuai kasus uji pada
@@ -131,6 +139,7 @@ FR-020 sampai FR-033.
 Cloudflare Pages.
 
 **Keluaran:**
+
 - Dashboard (saldo akun, ringkasan arus kas, ringkasan sentinel).
 - Form Quick Entry (maksimal 4 field wajib).
 - Halaman laporan (P&L, Neraca, Arus Kas, Buku Besar) dan halaman Sentinel.
@@ -148,6 +157,7 @@ Cloudflare Pages.
 **Dependensi:** Fase 0–3 selesai.
 
 **Kriteria selesai:**
+
 - Seluruh user story pada [01_PRD.md](01_PRD.md) dapat didemonstrasikan end-to-end.
 - `npm run build` lolos, ukuran bundel di bawah 300 KB gzip (NFR-004).
 - Aplikasi ter-deploy dan dapat diakses via URL Cloudflare Pages.

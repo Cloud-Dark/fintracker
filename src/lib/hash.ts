@@ -1,26 +1,26 @@
 // Hash chaining SHA-256 via Web Crypto (TR-005, 20_DATABASE.md bagian 7.2).
 
-export const GENESIS_HASH = '0'.repeat(64);
+export const GENESIS_HASH = '0'.repeat(64)
 
 export async function sha256Hex(input: string): Promise<string> {
-  const data = new TextEncoder().encode(input);
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  const bytes = new Uint8Array(digest);
-  let out = '';
+  const data = new TextEncoder().encode(input)
+  const digest = await crypto.subtle.digest('SHA-256', data)
+  const bytes = new Uint8Array(digest)
+  let out = ''
   for (let i = 0; i < bytes.length; i += 1) {
-    out += (bytes[i] as number).toString(16).padStart(2, '0');
+    out += (bytes[i] as number).toString(16).padStart(2, '0')
   }
-  return out;
+  return out
 }
 
 export interface EntryHashInput {
-  prevHash: string;
-  transactionId: string;
-  accountId: string;
-  entryType: string;
-  amount: number;
-  sequenceNum: number;
-  createdAt: string;
+  prevHash: string
+  transactionId: string
+  accountId: string
+  entryType: string
+  amount: number
+  sequenceNum: number
+  createdAt: string
 }
 
 export async function computeEntryHash(input: EntryHashInput): Promise<string> {
@@ -32,8 +32,8 @@ export async function computeEntryHash(input: EntryHashInput): Promise<string> {
     String(input.amount),
     String(input.sequenceNum),
     input.createdAt,
-  ].join('|');
-  return sha256Hex(payload);
+  ].join('|')
+  return sha256Hex(payload)
 }
 
 // Varian sinkron SHA-256 (RFC 6234) untuk jalur yang tidak boleh async,
@@ -47,63 +47,73 @@ const K = new Uint32Array([
   0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
   0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
-]);
+])
 
 function rotr(x: number, n: number): number {
-  return (x >>> n) | (x << (32 - n));
+  return (x >>> n) | (x << (32 - n))
 }
 
 export function sha256HexSync(input: string): string {
-  const msg = new TextEncoder().encode(input);
-  const bitLen = msg.length * 8;
-  const withPad = new Uint8Array(((msg.length + 9 + 63) >> 6) << 6);
-  withPad.set(msg);
-  withPad[msg.length] = 0x80;
-  const dv = new DataView(withPad.buffer);
-  dv.setUint32(withPad.length - 8, Math.floor(bitLen / 2 ** 32));
-  dv.setUint32(withPad.length - 4, bitLen >>> 0);
+  const msg = new TextEncoder().encode(input)
+  const bitLen = msg.length * 8
+  const withPad = new Uint8Array(((msg.length + 9 + 63) >> 6) << 6)
+  withPad.set(msg)
+  withPad[msg.length] = 0x80
+  const dv = new DataView(withPad.buffer)
+  dv.setUint32(withPad.length - 8, Math.floor(bitLen / 2 ** 32))
+  dv.setUint32(withPad.length - 4, bitLen >>> 0)
 
   const h = new Uint32Array([
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
-  ]);
-  const w = new Uint32Array(64);
+  ])
+  const w = new Uint32Array(64)
 
   for (let off = 0; off < withPad.length; off += 64) {
-    for (let i = 0; i < 16; i += 1) w[i] = dv.getUint32(off + i * 4);
+    for (let i = 0; i < 16; i += 1) w[i] = dv.getUint32(off + i * 4)
     for (let i = 16; i < 64; i += 1) {
-      const a = w[i - 15] as number;
-      const b = w[i - 2] as number;
-      const s0 = rotr(a, 7) ^ rotr(a, 18) ^ (a >>> 3);
-      const s1 = rotr(b, 17) ^ rotr(b, 19) ^ (b >>> 10);
-      w[i] = ((w[i - 16] as number) + s0 + (w[i - 7] as number) + s1) >>> 0;
+      const a = w[i - 15] as number
+      const b = w[i - 2] as number
+      const s0 = rotr(a, 7) ^ rotr(a, 18) ^ (a >>> 3)
+      const s1 = rotr(b, 17) ^ rotr(b, 19) ^ (b >>> 10)
+      w[i] = ((w[i - 16] as number) + s0 + (w[i - 7] as number) + s1) >>> 0
     }
     let [a, b, c, d, e, f, g, hh] = [
-      h[0] as number, h[1] as number, h[2] as number, h[3] as number,
-      h[4] as number, h[5] as number, h[6] as number, h[7] as number,
-    ];
+      h[0] as number,
+      h[1] as number,
+      h[2] as number,
+      h[3] as number,
+      h[4] as number,
+      h[5] as number,
+      h[6] as number,
+      h[7] as number,
+    ]
     for (let i = 0; i < 64; i += 1) {
-      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
-      const ch = (e & f) ^ (~e & g);
-      const t1 = (hh + S1 + ch + (K[i] as number) + (w[i] as number)) >>> 0;
-      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
-      const maj = (a & b) ^ (a & c) ^ (b & c);
-      const t2 = (S0 + maj) >>> 0;
-      hh = g; g = f; f = e;
-      e = (d + t1) >>> 0;
-      d = c; c = b; b = a;
-      a = (t1 + t2) >>> 0;
+      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)
+      const ch = (e & f) ^ (~e & g)
+      const t1 = (hh + S1 + ch + (K[i] as number) + (w[i] as number)) >>> 0
+      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)
+      const maj = (a & b) ^ (a & c) ^ (b & c)
+      const t2 = (S0 + maj) >>> 0
+      hh = g
+      g = f
+      f = e
+      e = (d + t1) >>> 0
+      d = c
+      c = b
+      b = a
+      a = (t1 + t2) >>> 0
     }
-    h[0] = ((h[0] as number) + a) >>> 0;
-    h[1] = ((h[1] as number) + b) >>> 0;
-    h[2] = ((h[2] as number) + c) >>> 0;
-    h[3] = ((h[3] as number) + d) >>> 0;
-    h[4] = ((h[4] as number) + e) >>> 0;
-    h[5] = ((h[5] as number) + f) >>> 0;
-    h[6] = ((h[6] as number) + g) >>> 0;
-    h[7] = ((h[7] as number) + hh) >>> 0;
+    h[0] = ((h[0] as number) + a) >>> 0
+    h[1] = ((h[1] as number) + b) >>> 0
+    h[2] = ((h[2] as number) + c) >>> 0
+    h[3] = ((h[3] as number) + d) >>> 0
+    h[4] = ((h[4] as number) + e) >>> 0
+    h[5] = ((h[5] as number) + f) >>> 0
+    h[6] = ((h[6] as number) + g) >>> 0
+    h[7] = ((h[7] as number) + hh) >>> 0
   }
 
-  let out = '';
-  for (let i = 0; i < 8; i += 1) out += (h[i] as number).toString(16).padStart(8, '0');
-  return out;
+  let out = ''
+  for (let i = 0; i < 8; i += 1) out += (h[i] as number).toString(16).padStart(8, '0')
+  return out
 }

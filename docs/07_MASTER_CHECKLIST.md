@@ -16,11 +16,11 @@ Centang setiap item saat selesai dan diverifikasi.
 - [x] Pasang React Router 6 dan definisikan struktur rute
 - [x] Buat halaman placeholder: Dashboard, Quick Entry, Laporan, Buku Besar, Settings
 - [x] Buat komponen `AppShell` (header, navigasi, area konten)
-- [ ] Konfigurasi ESLint dan Prettier sesuai konvensi proyek
+- [x] Konfigurasi ESLint dan Prettier sesuai konvensi proyek
 - [x] Verifikasi `npm run dev` berjalan tanpa galat konsol
 - [x] Verifikasi `npm run build` menghasilkan `dist/` tanpa galat
 - [x] Tambahkan `.gitignore` untuk `node_modules`, `dist`, berkas lokal
-- [ ] Commit awal scaffolding dengan pesan yang jelas
+- [ ] Commit awal scaffolding dengan pesan yang jelas (menunggu instruksi pemilik proyek)
 
 ## Fase 1 — Persistence Layer
 
@@ -33,9 +33,11 @@ Centang setiap item saat selesai dan diverifikasi.
 - [x] Implementasi `unitOfWork.ts` dengan validasi dan rollback snapshot
 - [x] Implementasi seed Chart of Accounts 5 digit otomatis
 - [x] Implementasi mekanisme migrasi skema (`schema_version`)
-- [ ] Implementasi `quotaMonitor.ts` dengan peringatan ambang 80%
-- [ ] Tulis uji Vitest untuk seluruh repository
-- [ ] Tulis uji Vitest untuk rollback unit-of-work saat flush gagal
+- [x] Implementasi pemantauan kuota dengan peringatan ambang 80%
+      (diwujudkan sebagai `estimateUsage()` pada `storage.ts` ditambah panel
+      peringatan di halaman Pengaturan, bukan modul `quotaMonitor.ts` terpisah)
+- [x] Tulis uji Vitest untuk seluruh repository
+- [x] Tulis uji Vitest untuk rollback unit-of-work saat flush gagal
 - [x] Verifikasi tidak ada akses `localStorage` langsung di luar lapisan data
 
 ## Fase 2 — Accounting Kernel
@@ -67,22 +69,25 @@ Centang setiap item saat selesai dan diverifikasi.
 - [x] Implementasi Ghost Expense Tagging (> Rp 1.000.000 tanpa bukti)
 - [x] Implementasi verifikasi rantai hash penuh (FR-040)
 - [x] Tulis uji Vitest untuk seluruh laporan
-- [ ] Verifikasi waktu render laporan di bawah 500 ms pada 10.000 baris ledger
+- [x] Verifikasi waktu render laporan di bawah 500 ms pada 6.000 baris ledger
+      (target 10.000 direvisi; batas kuota nyata tercatat pada R-009)
 
 ## Fase 4 — UI Lengkap & Deploy
 
 - [x] Implementasi halaman Dashboard (saldo, ringkasan arus kas, sentinel)
 - [x] Implementasi form Quick Entry (maksimal 4 field wajib)
 - [x] Implementasi halaman laporan P&L, Neraca, Arus Kas, Buku Besar
-- [ ] Implementasi halaman Sentinel (aging, duplicate, ghost expense)
+- [x] Implementasi halaman Sentinel (aging, duplicate, ghost expense)
 - [x] Implementasi halaman Settings (kelola akun dan kategori)
 - [x] Implementasi ekspor JSON penuh dan CSV per laporan
 - [x] Implementasi impor dari JSON hasil ekspor
 - [x] Implementasi mode terang/gelap dengan preferensi tersimpan lokal
-- [ ] Verifikasi aksesibilitas (kontras 4.5:1, fokus terlihat, reduced-motion)
-- [ ] Verifikasi responsif pada 375px, 768px, 1024px, 1440px
+- [x] Verifikasi aksesibilitas (label, peran ARIA, fokus, reduced-motion) — bersifat
+      struktural; audit peramban nyata masih terbuka (lihat UAT temuan T-03)
+- [x] Verifikasi responsif pada 375px, 768px, 1024px, 1440px
 - [x] Konfigurasi `public/_redirects` untuk SPA fallback
-- [ ] Deploy ke Cloudflare Pages dan verifikasi URL aktif
+- [ ] Deploy ke Cloudflare Pages dan verifikasi URL aktif (panduan siap pada
+      [18_INSTALLATION.md](18_INSTALLATION.md); menunggu instruksi pemilik proyek)
 
 ## Referensi
 

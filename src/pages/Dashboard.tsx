@@ -33,11 +33,8 @@ export default function Dashboard() {
   const { ready, summary, sentinel, transactions, accounts } = useLedger()
 
   const recent = useMemo(
-    () =>
-      [...transactions]
-        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-        .slice(0, 8),
-    [transactions],
+    () => [...transactions].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 8),
+    [transactions]
   )
 
   const assetRows = useMemo(() => {
@@ -55,7 +52,9 @@ export default function Dashboard() {
     {
       key: 'transactionDate',
       header: 'Tanggal',
-      render: (row) => <span className="num whitespace-nowrap">{formatDateID(row.transactionDate)}</span>,
+      render: (row) => (
+        <span className="num whitespace-nowrap">{formatDateID(row.transactionDate)}</span>
+      ),
     },
     {
       key: 'description',
@@ -69,7 +68,9 @@ export default function Dashboard() {
     {
       key: 'mutationType',
       header: 'Jenis',
-      render: (row) => <span className="font-mono text-xs">{MUTATION_LABEL[row.mutationType]}</span>,
+      render: (row) => (
+        <span className="font-mono text-xs">{MUTATION_LABEL[row.mutationType]}</span>
+      ),
     },
     {
       key: 'status',
@@ -82,8 +83,13 @@ export default function Dashboard() {
       align: 'right',
       render: (row) => {
         const signed = signedAmount(row)
-        const tone = signed > 0 ? 'text-positive' : signed < 0 ? 'text-negative' : 'text-muted-foreground'
-        return <span className={`num whitespace-nowrap ${tone}`}>{formatIDR(signed === 0 ? row.amount : signed)}</span>
+        const tone =
+          signed > 0 ? 'text-positive' : signed < 0 ? 'text-negative' : 'text-muted-foreground'
+        return (
+          <span className={`num whitespace-nowrap ${tone}`}>
+            {formatIDR(signed === 0 ? row.amount : signed)}
+          </span>
+        )
       },
     },
   ]
@@ -95,8 +101,8 @@ export default function Dashboard() {
         <p className="kicker">Fintrack Core — Ringkasan Buku Besar ————</p>
         <h1 className="mt-5 max-w-3xl">Meja kerja keuangan Anda hari ini</h1>
         <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted-foreground">
-          Setiap mutasi dicatat sebagai jurnal double-entry yang berantai dan dapat diaudit. Koreksi tidak pernah
-          menghapus baris — hanya menerbitkan jurnal pembalik.
+          Setiap mutasi dicatat sebagai jurnal double-entry yang berantai dan dapat diaudit. Koreksi
+          tidak pernah menghapus baris — hanya menerbitkan jurnal pembalik.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link to="/transaksi" className="btn-primary min-h-[40px]">
@@ -110,7 +116,11 @@ export default function Dashboard() {
 
       {/* Baris statistik */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard kicker="Total Kas & Bank" value={formatIDR(summary?.totalCash ?? 0)} hint="Saldo gabungan akun 10100–10300." />
+        <StatCard
+          kicker="Total Kas & Bank"
+          value={formatIDR(summary?.totalCash ?? 0)}
+          hint="Saldo gabungan akun 10100–10300."
+        />
         <StatCard
           kicker="Pemasukan Bulan Ini"
           value={formatIDR(summary?.monthIncome ?? 0)}
@@ -137,7 +147,9 @@ export default function Dashboard() {
           <p className="kicker">Saldo Akun Aset ————</p>
           <div className="rule-line mt-4" />
           {assetRows.length === 0 ? (
-            <p className="mt-6 text-sm text-muted-foreground">Belum ada saldo tercatat pada akun aset.</p>
+            <p className="mt-6 text-sm text-muted-foreground">
+              Belum ada saldo tercatat pada akun aset.
+            </p>
           ) : (
             <ul className="mt-4 divide-y divide-rule/30">
               {assetRows.map((row) => (
@@ -170,26 +182,38 @@ export default function Dashboard() {
               <li className="border-[1.5px] border-warning p-4">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <Badge variant="unverified">Piutang Jatuh Tempo</Badge>
-                  <span className="num font-mono text-sm text-warning">{formatIDR(sentinel.agingOverdueTotal)}</span>
+                  <span className="num font-mono text-sm text-warning">
+                    {formatIDR(sentinel.agingOverdueTotal)}
+                  </span>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                  {sentinel.agingOverdueCount} piutang berumur 30 hari ke atas. Bucket: 30-59 ({sentinel.agingBuckets['30-59']}),
-                  60-89 ({sentinel.agingBuckets['60-89']}), 90+ ({sentinel.agingBuckets['90+']}).
+                  {sentinel.agingOverdueCount} piutang berumur 30 hari ke atas. Bucket: 30-59 (
+                  {sentinel.agingBuckets['30-59']}), 60-89 ({sentinel.agingBuckets['60-89']}), 90+ (
+                  {sentinel.agingBuckets['90+']}).
                 </p>
-                <Link to="/laporan" className="btn-ghost mt-4 min-h-[40px] border-warning text-warning">
+                <Link
+                  to="/sentinel"
+                  className="btn-ghost mt-4 min-h-[40px] border-warning text-warning"
+                >
                   Lihat Detail Piutang
                 </Link>
               </li>
               <li className="border-[1.5px] border-warning p-4">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <Badge variant="unverified">Ghost Expense</Badge>
-                  <span className="num font-mono text-sm text-warning">{formatIDR(sentinel.ghostExpenseTotal)}</span>
+                  <span className="num font-mono text-sm text-warning">
+                    {formatIDR(sentinel.ghostExpenseTotal)}
+                  </span>
                 </div>
                 <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                  {sentinel.ghostExpenseCount} pengeluaran di atas Rp 1.000.000 belum memiliki lampiran bukti bayar.
+                  {sentinel.ghostExpenseCount} pengeluaran di atas Rp 1.000.000 belum memiliki
+                  lampiran bukti bayar.
                 </p>
-                <Link to="/transaksi" className="btn-ghost mt-4 min-h-[40px] border-warning text-warning">
-                  Lihat Transaksi Terkait
+                <Link
+                  to="/sentinel"
+                  className="btn-ghost mt-4 min-h-[40px] border-warning text-warning"
+                >
+                  Lihat Temuan Ghost Expense
                 </Link>
               </li>
             </ul>

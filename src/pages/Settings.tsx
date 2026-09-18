@@ -6,7 +6,12 @@ import SectionHeader from '@/components/ui/SectionHeader'
 import { bootstrap, exportBackup, importBackup, resetAll } from '@/repositories/db'
 import { estimateUsage } from '@/repositories/storage'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
-import { agingReceivables, ghostExpenses, type AgingReceivables, type GhostExpense } from '@/domain/sentinel'
+import {
+  agingReceivables,
+  ghostExpenses,
+  type AgingReceivables,
+  type GhostExpense,
+} from '@/domain/sentinel'
 import { useToast } from '@/hooks/useToast'
 import { formatIDR } from '@/lib/money'
 import { formatDateID } from '@/lib/date'
@@ -29,7 +34,10 @@ export default function Settings() {
   const [usage, setUsage] = useState(() => ({ bytes: 0, ratio: 0 }))
   const [verification, setVerification] = useState<ChainVerification | null>(null)
   const [verifying, setVerifying] = useState(false)
-  const [pendingImport, setPendingImport] = useState<{ envelope: BackupEnvelope; fileName: string } | null>(null)
+  const [pendingImport, setPendingImport] = useState<{
+    envelope: BackupEnvelope
+    fileName: string
+  } | null>(null)
   const [resetOpen, setResetOpen] = useState(false)
   const [resetPhrase, setResetPhrase] = useState('')
   const [sentinelTick, setSentinelTick] = useState(0)
@@ -41,7 +49,9 @@ export default function Settings() {
     refreshUsage()
   }, [refreshUsage])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- `sentinelTick` adalah penanda invalidasi manual; fungsi domain membaca penyimpanan.
   const ghosts: GhostExpense[] = useMemo(() => ghostExpenses(), [sentinelTick])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- idem.
   const aging: AgingReceivables = useMemo(() => agingReceivables(), [sentinelTick])
 
   const onExport = useCallback(() => {
@@ -56,7 +66,11 @@ export default function Settings() {
       anchor.click()
       anchor.remove()
       URL.revokeObjectURL(url)
-      push({ title: 'Cadangan diunduh', description: 'Berkas JSON berisi seluruh data lokal.', variant: 'success' })
+      push({
+        title: 'Cadangan diunduh',
+        description: 'Berkas JSON berisi seluruh data lokal.',
+        variant: 'success',
+      })
     } catch (error) {
       push({
         title: 'Gagal mengekspor cadangan',
@@ -89,7 +103,7 @@ export default function Settings() {
           })
         })
     },
-    [push],
+    [push]
   )
 
   const confirmImport = useCallback(() => {
@@ -124,7 +138,11 @@ export default function Settings() {
       setVerification(null)
       refreshUsage()
       setSentinelTick((n) => n + 1)
-      push({ title: 'Data direset', description: 'Seluruh data lokal dihapus dan seed awal dipasang kembali.', variant: 'success' })
+      push({
+        title: 'Data direset',
+        description: 'Seluruh data lokal dihapus dan seed awal dipasang kembali.',
+        variant: 'success',
+      })
     } catch (error) {
       push({
         title: 'Reset gagal',
@@ -164,10 +182,12 @@ export default function Settings() {
         {/* Panel Data */}
         <div className="panel p-6">
           <p className="kicker mb-4">Data — Cadangan & Reset</p>
-          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">Cadangan Data</h3>
+          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">
+            Cadangan Data
+          </h3>
           <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
-            Ekspor seluruh data ke berkas JSON bertanda checksum, atau pulihkan dari cadangan sebelumnya. Impor akan
-            menimpa seluruh data yang ada saat ini.
+            Ekspor seluruh data ke berkas JSON bertanda checksum, atau pulihkan dari cadangan
+            sebelumnya. Impor akan menimpa seluruh data yang ada saat ini.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button type="button" className="btn-primary min-h-[40px]" onClick={onExport}>
@@ -205,9 +225,12 @@ export default function Settings() {
         <div className="panel p-6">
           <p className="kicker mb-4">Penyimpanan Lokal</p>
           <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">Kuota Terpakai</h3>
+            <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">
+              Kuota Terpakai
+            </h3>
             <p className="num font-mono text-sm">
-              {formatBytes(usage.bytes)} <span className="text-muted-foreground">/ 5 MB ({ratioPercent}%)</span>
+              {formatBytes(usage.bytes)}{' '}
+              <span className="text-muted-foreground">/ 5 MB ({ratioPercent}%)</span>
             </p>
           </div>
 
@@ -227,8 +250,12 @@ export default function Settings() {
           </div>
 
           {overQuotaWarning && (
-            <p className="mt-4 border-[1.5px] border-warning bg-warning/10 p-3 text-xs text-warning" role="alert">
-              ! Penyimpanan melewati 80% kuota. Ekspor cadangan lalu pertimbangkan membersihkan data lama.
+            <p
+              className="mt-4 border-[1.5px] border-warning bg-warning/10 p-3 text-xs text-warning"
+              role="alert"
+            >
+              ! Penyimpanan melewati 80% kuota. Ekspor cadangan lalu pertimbangkan membersihkan data
+              lama.
             </p>
           )}
 
@@ -240,12 +267,19 @@ export default function Settings() {
         {/* Panel Integritas */}
         <div className="panel p-6">
           <p className="kicker mb-4">Integritas Buku Besar</p>
-          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">Verifikasi Rantai Hash</h3>
+          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">
+            Verifikasi Rantai Hash
+          </h3>
           <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
-            Setiap baris ledger menautkan hash baris sebelumnya. Verifikasi memeriksa keseluruhan rantai dari entri
-            pertama.
+            Setiap baris ledger menautkan hash baris sebelumnya. Verifikasi memeriksa keseluruhan
+            rantai dari entri pertama.
           </p>
-          <button type="button" className="btn-signal mt-6 min-h-[40px]" onClick={onVerify} disabled={verifying}>
+          <button
+            type="button"
+            className="btn-signal mt-6 min-h-[40px]"
+            onClick={onVerify}
+            disabled={verifying}
+          >
             {verifying ? 'Memeriksa…' : 'Verifikasi Sekarang'}
           </button>
 
@@ -260,12 +294,16 @@ export default function Settings() {
               <p className="kicker mb-2">Hasil Terakhir</p>
               {verification.valid ? (
                 <p className="text-sm">
-                  Rantai valid. <span className="num font-mono">{verification.checked}</span> entri diperiksa.
+                  Rantai valid. <span className="num font-mono">{verification.checked}</span> entri
+                  diperiksa.
                 </p>
               ) : (
                 <p className="text-sm text-negative">
-                  Rantai rusak setelah <span className="num font-mono">{verification.checked}</span> entri. Entri
-                  pertama yang rusak: <span className="font-mono">{verification.brokenAt ?? 'tidak teridentifikasi'}</span>
+                  Rantai rusak setelah <span className="num font-mono">{verification.checked}</span>{' '}
+                  entri. Entri pertama yang rusak:{' '}
+                  <span className="font-mono">
+                    {verification.brokenAt ?? 'tidak teridentifikasi'}
+                  </span>
                 </p>
               )}
             </div>
@@ -277,14 +315,19 @@ export default function Settings() {
           <p className="kicker mb-4">Cash Leakage Sentinel</p>
           <div className="grid grid-cols-1 border-l border-t border-border lg:grid-cols-2">
             <div className="border-b border-r border-border p-5">
-              <h3 id="ghost-heading" className="font-display text-lg font-black tracking-[-0.005em] md:text-xl">
+              <h3
+                id="ghost-heading"
+                className="font-display text-lg font-black tracking-[-0.005em] md:text-xl"
+              >
                 Ghost Expenses
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 Pengeluaran di atas Rp 1.000.000 tanpa lampiran bukti bayar.
               </p>
               {ghosts.length === 0 ? (
-                <p className="mt-4 text-xs text-muted-foreground">Tidak ada pengeluaran tanpa bukti.</p>
+                <p className="mt-4 text-xs text-muted-foreground">
+                  Tidak ada pengeluaran tanpa bukti.
+                </p>
               ) : (
                 <ul aria-labelledby="ghost-heading" className="mt-4 flex flex-col">
                   {ghosts.map((ghost) => (
@@ -306,13 +349,16 @@ export default function Settings() {
                   ))}
                 </ul>
               )}
-              <Link to="/transaksi" className="btn-ghost mt-5 min-h-[40px]">
-                Buka Transaksi
+              <Link to="/sentinel" className="btn-ghost mt-5 min-h-[40px]">
+                Buka Halaman Sentinel
               </Link>
             </div>
 
             <div className="border-b border-r border-border p-5">
-              <h3 id="aging-heading" className="font-display text-lg font-black tracking-[-0.005em] md:text-xl">
+              <h3
+                id="aging-heading"
+                className="font-display text-lg font-black tracking-[-0.005em] md:text-xl"
+              >
                 Aging Piutang
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
@@ -331,7 +377,12 @@ export default function Settings() {
                       <span className="num font-mono text-xs text-muted-foreground">
                         {aging.buckets[key].items.length} entri
                       </span>
-                      <span className={['num', key === '90+' && aging.buckets[key].total > 0 ? 'text-negative' : ''].join(' ')}>
+                      <span
+                        className={[
+                          'num',
+                          key === '90+' && aging.buckets[key].total > 0 ? 'text-negative' : '',
+                        ].join(' ')}
+                      >
                         {formatIDR(aging.buckets[key].total)}
                       </span>
                     </span>
@@ -348,7 +399,9 @@ export default function Settings() {
         {/* Panel Tentang */}
         <div className="panel p-6">
           <p className="kicker mb-4">Tentang Aplikasi</p>
-          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">FinTrack Core</h3>
+          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">
+            FinTrack Core
+          </h3>
           <dl className="mt-5 grid grid-cols-1 border-l border-t border-border sm:grid-cols-2">
             <div className="border-b border-r border-border p-4">
               <dt className="kicker">Versi Aplikasi</dt>
@@ -360,9 +413,9 @@ export default function Settings() {
             </div>
           </dl>
           <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted-foreground">
-            Seluruh data disimpan di peramban perangkat ini saja dan tidak pernah dikirim ke server. Data akan hilang
-            bila data situs dibersihkan, peramban dipasang ulang, atau mode privat ditutup. Ekspor cadangan secara
-            berkala.
+            Seluruh data disimpan di peramban perangkat ini saja dan tidak pernah dikirim ke server.
+            Data akan hilang bila data situs dibersihkan, peramban dipasang ulang, atau mode privat
+            ditutup. Ekspor cadangan secara berkala.
           </p>
         </div>
       </div>
@@ -375,7 +428,11 @@ export default function Settings() {
         description="Data saat ini akan diganti sepenuhnya oleh isi berkas cadangan. Tindakan ini tidak dapat dibatalkan."
         actions={
           <>
-            <button type="button" className="btn-ghost min-h-[40px]" onClick={() => setPendingImport(null)}>
+            <button
+              type="button"
+              className="btn-ghost min-h-[40px]"
+              onClick={() => setPendingImport(null)}
+            >
               Batal
             </button>
             <button type="button" className="btn-signal min-h-[40px]" onClick={confirmImport}>
@@ -392,11 +449,15 @@ export default function Settings() {
             </div>
             <div className="border-b border-r border-border p-3">
               <dt className="kicker">Diekspor Pada</dt>
-              <dd className="num mt-1 font-mono text-xs">{pendingImport.envelope.exportedAt ?? '—'}</dd>
+              <dd className="num mt-1 font-mono text-xs">
+                {pendingImport.envelope.exportedAt ?? '—'}
+              </dd>
             </div>
             <div className="border-b border-r border-border p-3">
               <dt className="kicker">Versi Skema</dt>
-              <dd className="num mt-1 font-mono text-xs">{String(pendingImport.envelope.schemaVersion ?? '—')}</dd>
+              <dd className="num mt-1 font-mono text-xs">
+                {String(pendingImport.envelope.schemaVersion ?? '—')}
+              </dd>
             </div>
           </dl>
         )}

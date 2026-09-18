@@ -48,7 +48,14 @@ export function Toast({ toast, onDismiss }: ToastProps) {
         aria-label="Tutup notifikasi"
         className="inline-flex h-6 w-6 shrink-0 items-center justify-center border border-border text-foreground hover:bg-muted"
       >
-        <svg width="10" height="10" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg
+          width="10"
+          height="10"
+          viewBox="0 0 16 16"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
           <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" />
         </svg>
       </button>

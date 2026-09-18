@@ -10,7 +10,45 @@ klien statis.
 
 ## [Unreleased]
 
-Belum ada perubahan tercatat sejak 0.2.0.
+Belum ada perubahan tercatat sejak 0.3.0.
+
+## [0.3.0] - 2026-09-19
+
+### Added
+
+- Halaman Sentinel Kebocoran Kas sebagai rumah utama temuan umur piutang dan
+  ghost expense, lengkap dengan rute dan butir navigasi.
+- Konfigurasi ESLint dan Prettier beserta skrip `lint`, `format`, dan `verify`.
+- Uji repository dan unit-of-work (26 pengujian), termasuk pembuktian rollback
+  penuh saat flush gagal di tengah.
+- Uji sentinel (27 pengujian) mencakup batas bucket umur piutang, jendela
+  duplikat 48 jam, dan ambang ghost expense.
+- Uji penerimaan alur UAT-01 sampai UAT-06 (9 pengujian).
+- Tolok ukur performa terpisah (`npm run test:perf`) dengan konfigurasi
+  `vitest.perf.config.ts`.
+- Panduan instalasi dan penerapan Cloudflare Pages (`18_INSTALLATION.md`).
+- Hasil uji penerimaan (`uat/2026-09-19_smoke-test-mvp.md`).
+
+### Changed
+
+- Target NFR-002 direvisi dari 10.000 menjadi 6.000 baris ledger setelah
+  pengukuran menunjukkan kuota `localStorage` habis pada sekitar 7.464 baris.
+- Roadmap: milestone v0.1 sampai v0.9 berstatus selesai, v1.0 sedang berjalan.
+- Master checklist: 59 dari 61 butir selesai; sisanya commit awal dan penerapan
+  produksi yang menunggu instruksi pemilik proyek.
+
+### Fixed
+
+- Wadah tabel yang dapat digeser kini dapat difokuskan papan ketik
+  (`role="region"` dan `tabIndex`), sebelumnya tidak terjangkau tanpa tetikus.
+- Pengelolaan fokus pada panel menu mobile: fokus masuk saat dibuka dan kembali
+  ke pemicu saat ditutup.
+- Penanda BOM pada ekspor CSV ditulis sebagai escape `﻿`, sebelumnya
+  karakter mentah yang terdeteksi sebagai spasi tak lazim.
+
+### Security
+
+- Tidak ada.
 
 ## [0.2.0] - 2026-09-19
 

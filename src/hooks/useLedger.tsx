@@ -8,7 +8,12 @@ import {
   type ReactNode,
 } from 'react'
 import { bootstrap, getAccounts, getCategories, getTransactions } from '@/repositories/db'
-import { postTransaction, reverseTransaction, type PostResult, type PostTransactionInput } from '@/domain/kernel'
+import {
+  postTransaction,
+  reverseTransaction,
+  type PostResult,
+  type PostTransactionInput,
+} from '@/domain/kernel'
 import { dashboardSummary, type DashboardSummary } from '@/domain/reporting'
 import { sentinelSummary, type SentinelSummary } from '@/domain/sentinel'
 import { useToast } from '@/hooks/useToast'
@@ -61,7 +66,11 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       setSummary(dashboardSummary())
       setSentinel(sentinelSummary())
     } catch (error) {
-      push({ title: 'Gagal menyiapkan buku besar', description: errorMessage(error), variant: 'error' })
+      push({
+        title: 'Gagal menyiapkan buku besar',
+        description: errorMessage(error),
+        variant: 'error',
+      })
     } finally {
       setReady(true)
     }
@@ -83,7 +92,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         return null
       }
     },
-    [push, refresh],
+    [push, refresh]
   )
 
   const reverse = useCallback(
@@ -102,12 +111,22 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         return null
       }
     },
-    [push, refresh],
+    [push, refresh]
   )
 
   const value = useMemo<LedgerContextValue>(
-    () => ({ ready, accounts, categories, transactions, summary, sentinel, refresh, post, reverse }),
-    [ready, accounts, categories, transactions, summary, sentinel, refresh, post, reverse],
+    () => ({
+      ready,
+      accounts,
+      categories,
+      transactions,
+      summary,
+      sentinel,
+      refresh,
+      post,
+      reverse,
+    }),
+    [ready, accounts, categories, transactions, summary, sentinel, refresh, post, reverse]
   )
 
   return <LedgerContext.Provider value={value}>{children}</LedgerContext.Provider>

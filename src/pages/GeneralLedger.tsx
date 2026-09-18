@@ -53,6 +53,7 @@ export default function GeneralLedger() {
       map.set(entry.id, { prevHash: entry.prevHash, entryHash: entry.entryHash })
     }
     return map
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `rows` penanda invalidasi; getLedgerEntries() membaca penyimpanan.
   }, [rows])
 
   const totals = useMemo(() => {
@@ -84,7 +85,9 @@ export default function GeneralLedger() {
       {
         key: 'transactionDate',
         header: 'Tanggal',
-        render: (row) => <span className="num whitespace-nowrap">{formatDateID(row.transactionDate)}</span>,
+        render: (row) => (
+          <span className="num whitespace-nowrap">{formatDateID(row.transactionDate)}</span>
+        ),
       },
       {
         key: 'description',
@@ -144,7 +147,7 @@ export default function GeneralLedger() {
         },
       },
     ],
-    [hashById],
+    [hashById]
   )
 
   const balanced = totals.difference === 0
@@ -156,7 +159,12 @@ export default function GeneralLedger() {
         title="Buku Besar"
         description="Seluruh baris jurnal tercatat berurutan dan tidak dapat diubah. Saring per akun, rentang tanggal, atau sisi entri."
         action={
-          <button type="button" className="btn-signal min-h-[40px]" onClick={onVerify} disabled={verifying}>
+          <button
+            type="button"
+            className="btn-signal min-h-[40px]"
+            onClick={onVerify}
+            disabled={verifying}
+          >
             {verifying ? 'Memeriksa…' : 'Verifikasi Integritas'}
           </button>
         }
@@ -229,13 +237,21 @@ export default function GeneralLedger() {
       <div className="mb-6 grid grid-cols-1 border-l border-t border-border sm:grid-cols-3">
         <div className="border-b border-r border-border p-5">
           <p className="kicker">Total Debit</p>
-          <p className="num mt-3 font-display text-2xl font-black tracking-[-0.02em]">{formatIDR(totals.debit)}</p>
+          <p className="num mt-3 font-display text-2xl font-black tracking-[-0.02em]">
+            {formatIDR(totals.debit)}
+          </p>
         </div>
         <div className="border-b border-r border-border p-5">
           <p className="kicker">Total Kredit</p>
-          <p className="num mt-3 font-display text-2xl font-black tracking-[-0.02em]">{formatIDR(totals.credit)}</p>
+          <p className="num mt-3 font-display text-2xl font-black tracking-[-0.02em]">
+            {formatIDR(totals.credit)}
+          </p>
         </div>
-        <div className={['border-b border-r border-border p-5', balanced ? '' : 'bg-warning/10'].join(' ')}>
+        <div
+          className={['border-b border-r border-border p-5', balanced ? '' : 'bg-warning/10'].join(
+            ' '
+          )}
+        >
           <p className="kicker">Selisih</p>
           <p
             className={[
@@ -255,21 +271,22 @@ export default function GeneralLedger() {
 
       {verification && (
         <div
-          className={['panel mb-6 border-[1.5px] p-5', verification.valid ? 'border-positive' : 'border-negative'].join(
-            ' ',
-          )}
+          className={[
+            'panel mb-6 border-[1.5px] p-5',
+            verification.valid ? 'border-positive' : 'border-negative',
+          ].join(' ')}
           role="status"
         >
           <p className="kicker mb-2">Verifikasi Rantai Hash</p>
           {verification.valid ? (
             <p className="text-sm">
-              Rantai valid. <span className="num font-mono">{verification.checked}</span> entri diperiksa tanpa
-              penyimpangan.
+              Rantai valid. <span className="num font-mono">{verification.checked}</span> entri
+              diperiksa tanpa penyimpangan.
             </p>
           ) : (
             <p className="text-sm text-negative">
-              Rantai rusak setelah <span className="num font-mono">{verification.checked}</span> entri diperiksa. Entri
-              pertama yang rusak:{' '}
+              Rantai rusak setelah <span className="num font-mono">{verification.checked}</span>{' '}
+              entri diperiksa. Entri pertama yang rusak:{' '}
               <span className="font-mono">{verification.brokenAt ?? 'tidak teridentifikasi'}</span>
             </p>
           )}

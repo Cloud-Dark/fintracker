@@ -6,18 +6,18 @@
 
 ## 1. Stack Teknologi
 
-| Lapisan | Pilihan | Alasan |
-|---|---|---|
-| Build tool | Vite 5 | Build cepat, output statis siap Cloudflare Pages |
-| UI framework | React 18 + TypeScript (strict) | Ekosistem matang, tipe ketat untuk domain akuntansi |
-| Routing | React Router 6 (hash-free, SPA fallback) | Navigasi klien tanpa server |
-| Styling | Tailwind CSS 3 + CSS custom properties | Token terpusat, lihat [23_DESIGN.md](23_DESIGN.md) |
-| State | React Context + reducer per domain | Cukup untuk skala data lokal, tanpa dependensi tambahan |
-| Persistensi | `localStorage` melalui repository layer | Lihat [20_DATABASE.md](20_DATABASE.md) |
-| Hashing | Web Crypto API (`crypto.subtle.digest`) | SHA-256 native, tanpa dependensi |
-| ID | UUIDv7 implementasi lokal (time-ordered) | Urutan monotonic tanpa pustaka eksternal |
-| Uji | Vitest | Terintegrasi dengan Vite |
-| Deploy | Cloudflare Pages (static) | Sesuai permintaan pemilik proyek |
+| Lapisan      | Pilihan                                  | Alasan                                                  |
+| ------------ | ---------------------------------------- | ------------------------------------------------------- |
+| Build tool   | Vite 5                                   | Build cepat, output statis siap Cloudflare Pages        |
+| UI framework | React 18 + TypeScript (strict)           | Ekosistem matang, tipe ketat untuk domain akuntansi     |
+| Routing      | React Router 6 (hash-free, SPA fallback) | Navigasi klien tanpa server                             |
+| Styling      | Tailwind CSS 3 + CSS custom properties   | Token terpusat, lihat [23_DESIGN.md](23_DESIGN.md)      |
+| State        | React Context + reducer per domain       | Cukup untuk skala data lokal, tanpa dependensi tambahan |
+| Persistensi  | `localStorage` melalui repository layer  | Lihat [20_DATABASE.md](20_DATABASE.md)                  |
+| Hashing      | Web Crypto API (`crypto.subtle.digest`)  | SHA-256 native, tanpa dependensi                        |
+| ID           | UUIDv7 implementasi lokal (time-ordered) | Urutan monotonic tanpa pustaka eksternal                |
+| Uji          | Vitest                                   | Terintegrasi dengan Vite                                |
+| Deploy       | Cloudflare Pages (static)                | Sesuai permintaan pemilik proyek                        |
 
 ## 2. Kebutuhan Teknis
 
@@ -101,11 +101,30 @@ Pemetaan lengkap beserta konsekuensinya tercatat pada
 
 ## 4. Non-Functional Requirements
 
-| ID | Kebutuhan | Target |
-|---|---|---|
-| NFR-001 | Latensi interaksi lokal | P99 di bawah 16 ms |
-| NFR-002 | Waktu render laporan | Di bawah 500 ms pada 10.000 baris ledger |
-| NFR-003 | Ketersediaan | Berfungsi penuh tanpa jaringan |
-| NFR-004 | Ukuran bundel | Di bawah 300 KB gzip |
-| NFR-005 | Ketahanan data | Ekspor JSON penuh tersedia setiap saat |
-| NFR-006 | Waktu muat pertama | Di bawah 1.5 detik pada koneksi 3G cepat |
+| ID      | Kebutuhan               | Target                                                        |
+| ------- | ----------------------- | ------------------------------------------------------------- |
+| NFR-001 | Latensi interaksi lokal | P99 di bawah 16 ms                                            |
+| NFR-002 | Waktu render laporan    | Di bawah 500 ms pada 6.000 baris ledger (direvisi 2026-09-19) |
+| NFR-003 | Ketersediaan            | Berfungsi penuh tanpa jaringan                                |
+| NFR-004 | Ukuran bundel           | Di bawah 300 KB gzip                                          |
+| NFR-005 | Ketahanan data          | Ekspor JSON penuh tersedia setiap saat                        |
+| NFR-006 | Waktu muat pertama      | Di bawah 1.5 detik pada koneksi 3G cepat                      |
+
+### Catatan Kapasitas Penyimpanan (2026-09-19)
+
+Target NFR-002 semula menyebut 10.000 baris ledger. Pengukuran langsung
+menunjukkan kuota `localStorage` sebesar 5 MB habis pada sekitar 3.732
+transaksi, setara 7.464 baris ledger, dengan rasio pemakaian 0,954 sebelum
+peramban melempar `QuotaExceededError`. Volume 10.000 baris karena itu tidak
+dapat dicapai pada arsitektur penyimpanan saat ini.
+
+Target direvisi menjadi 6.000 baris ledger, yaitu volume uji terbesar yang
+aman. Hasil pengukuran pada volume tersebut: Laba Rugi 33,9 ms, Neraca 19,9 ms,
+Arus Kas 25,5 ms, Buku Besar 17,9 ms, dan sentinel 21,9 ms. Seluruhnya jauh di
+bawah ambang 500 ms. Verifikasi rantai hash penuh memerlukan 399,1 ms dan tidak
+terikat ambang tersebut karena bersifat kriptografis dan sekuensial.
+
+Peningkatan kapasitas memerlukan perpindahan ke IndexedDB atau backend
+terpusat, dan dijadwalkan pasca-v1. Risiko tercatat sebagai R-009 pada
+[10_RISK_REGISTER.md](10_RISK_REGISTER.md). Tolok ukur berjalan otomatis pada
+`src/domain/__tests__/performance.test.ts`.

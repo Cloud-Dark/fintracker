@@ -22,6 +22,7 @@ ledger append-only di tingkat database. Pemilik proyek menetapkan aplikasi
 berjalan sebagai SPA statis tanpa backend, dideploy ke Cloudflare Pages.
 
 **Alternatif ditolak:**
+
 - PostgreSQL 16 terkelola (butuh backend dan infrastruktur server).
 - SQLite via WASM (menambah kompleksitas dan ukuran bundel, di luar kebutuhan
   v1 dengan volume data kecil per pengguna).
@@ -29,6 +30,7 @@ berjalan sebagai SPA statis tanpa backend, dideploy ke Cloudflare Pages.
   dipertimbangkan ulang bila volume data melampaui kapasitas `localStorage`).
 
 **Konsekuensi:**
+
 - Tidak ada transaksi database native; diperlukan emulasi unit-of-work (TR-002).
 - Tidak ada multi-user, multi-device secara inheren (lihat R-005, R-008 pada
   [10_RISK_REGISTER.md](10_RISK_REGISTER.md)).
@@ -47,11 +49,13 @@ operasi `append` dan `read` (TR-004).
 data yang dapat ditegakkan secara independen dari kode klien.
 
 **Alternatif ditolak:**
+
 - Membekukan objek JavaScript (`Object.freeze`) sebagai satu-satunya proteksi —
   tidak mencegah manipulasi `localStorage` langsung dari DevTools, sehingga
   tetap dikombinasikan dengan hash chaining (ADR-003).
 
 **Konsekuensi:**
+
 - Immutability hanya berlaku selama aplikasi diakses melalui antarmuka resmi;
   manipulasi langsung `localStorage` dari DevTools tetap dimungkinkan (lihat
   R-004 pada [10_RISK_REGISTER.md](10_RISK_REGISTER.md)).
@@ -70,11 +74,13 @@ mendukung SHA-256 tanpa dependensi tambahan, sejalan dengan batasan
 zero-dependency pada TR-011.
 
 **Alternatif ditolak:**
+
 - Pustaka hashing pihak ketiga (menambah ukuran bundel, melanggar TR-011).
 - Menghapus hash chaining sepenuhnya (mengurangi kemampuan deteksi integritas
   yang menjadi salah satu tujuan inti G-2 pada [00_PROJECT_CHARTER.md](00_PROJECT_CHARTER.md)).
 
 **Konsekuensi:**
+
 - Deteksi tamper tetap tersedia untuk audit internal dan kesalahan tidak
   disengaja, dengan batasan yang dicatat pada R-004.
 
@@ -90,10 +96,12 @@ scope v1. Idempotensi digantikan pengecekan `client_tx_id` lokal (TR-008).
 jaringan dan otentikasi server tidak relevan untuk versi offline-only.
 
 **Alternatif ditolak:**
+
 - Mengimplementasikan sync sebagian (misal hanya push tanpa pull) — dinilai
   menambah kompleksitas tanpa nilai tambah pada v1 single-device.
 
 **Konsekuensi:**
+
 - Tidak ada sinkronisasi multi-perangkat pada v1 (R-005).
 - Tidak ada otentikasi/otorisasi pengguna pada v1 (R-003).
 - Kedua kemampuan direncanakan pada roadmap pasca-v1, lihat
@@ -111,12 +119,14 @@ spesifikasi awal, dideploy sebagai situs statis ke Cloudflare Pages.
 proyek; Cloudflare Pages dipilih sebagai target deploy eksplisit.
 
 **Alternatif ditolak:**
+
 - Flutter/React Native (menambah kompleksitas build lintas platform di luar
   kebutuhan v1 web-only).
 - Next.js atau framework server-rendered (tidak diperlukan karena aplikasi
   tanpa backend dan sepenuhnya statis; Vite lebih ringan untuk kasus ini).
 
 **Konsekuensi:**
+
 - Tidak ada aplikasi mobile native pada v1 (lihat scope pada
   [00_PROJECT_CHARTER.md](00_PROJECT_CHARTER.md)).
 - Build menghasilkan artefak statis (`dist/`) yang kompatibel dengan hosting
@@ -133,11 +143,13 @@ bulat dalam satuan rupiah utuh, bukan desimal/sen (TR-006).
 sehari-hari untuk kasus penggunaan UMKM dan solopreneur target.
 
 **Alternatif ditolak:**
+
 - Menyimpan dalam sen/desimal mengikuti pola `BIGINT` pada skema PostgreSQL
   asli — dipertahankan konsepnya namun disederhanakan ke rupiah utuh karena
   tidak ada kebutuhan sub-rupiah pada domain ini.
 
 **Konsekuensi:**
+
 - Operasi aritmetika pecahan dilarang, menghindari isu presisi floating-point
   JavaScript pada nominal uang.
 - Pembulatan (bila diperlukan dari sumber eksternal) dilakukan pada lapisan
@@ -155,10 +167,12 @@ Ini mempertahankan penuh aturan pada spesifikasi awal.
 tidak pernah memodifikasi baris yang sudah diposting.
 
 **Alternatif ditolak:**
+
 - Mengizinkan edit langsung dengan audit trail terpisah — melanggar prinsip
   append-only dan mempersulit verifikasi hash chain.
 
 **Konsekuensi:**
+
 - UI koreksi harus dirancang agar tidak terasa seperti "edit" bagi pengguna
   awam, meski secara internal berupa reversal + transaksi baru.
 
@@ -179,6 +193,7 @@ belum didokumentasikan; lihat [23_DESIGN.md](23_DESIGN.md) untuk detail lebih
 lanjut bila tersedia.
 
 **Konsekuensi:**
+
 - Seluruh komponen UI pada Fase 4 mengikuti token desain terpusat
   ([24_DESIGN_TOKEN.md](24_DESIGN_TOKEN.md)) demi konsistensi visual.
 

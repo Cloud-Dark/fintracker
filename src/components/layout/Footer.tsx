@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 
-const LINK_GROUPS: ReadonlyArray<{ title: string; links: ReadonlyArray<{ label: string; to: string }> }> = [
+const LINK_GROUPS: ReadonlyArray<{
+  title: string
+  links: ReadonlyArray<{ label: string; to: string }>
+}> = [
   {
     title: 'Ringkasan',
     links: [
@@ -13,6 +16,7 @@ const LINK_GROUPS: ReadonlyArray<{ title: string; links: ReadonlyArray<{ label: 
     links: [
       { label: 'Transaksi', to: '/transaksi' },
       { label: 'Buku Besar', to: '/buku-besar' },
+      { label: 'Sentinel', to: '/sentinel' },
     ],
   },
   {
@@ -30,7 +34,9 @@ export default function Footer() {
       <div className="mx-auto max-w-[1280px] px-4 py-14">
         <div className="grid grid-cols-1 border-l border-t border-border sm:grid-cols-2 lg:grid-cols-4">
           <div className="border-b border-r border-border p-6">
-            <p className="font-display text-lg font-black tracking-[-0.04em] text-foreground">FINTRACK CORE</p>
+            <p className="font-display text-lg font-black tracking-[-0.04em] text-foreground">
+              FINTRACK CORE
+            </p>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
               Pembukuan berpasangan yang presisi, berjalan penuh di peramban tanpa server.
             </p>

@@ -18,12 +18,12 @@ sedangkan simplisitas single-entry merusak akurasi dan integritas laporan audit.
 
 ## 3. Tujuan
 
-| ID | Tujuan | Ukuran |
-|---|---|---|
-| G-1 | Pencatatan transaksi ultra-cepat | < 3 detik per transaksi, P99 interaksi lokal < 16 ms |
-| G-2 | Integritas ledger absolut | `SUM(Debit) - SUM(Credit) = 0` pada 100% transaksi |
-| G-3 | Laporan keuangan instan | P&L, Neraca, Arus Kas ter-generate < 500 ms |
-| G-4 | Deteksi kebocoran kas | Aging receivables, duplicate outflow, ghost expense aktif |
+| ID  | Tujuan                           | Ukuran                                                    |
+| --- | -------------------------------- | --------------------------------------------------------- |
+| G-1 | Pencatatan transaksi ultra-cepat | < 3 detik per transaksi, P99 interaksi lokal < 16 ms      |
+| G-2 | Integritas ledger absolut        | `SUM(Debit) - SUM(Credit) = 0` pada 100% transaksi        |
+| G-3 | Laporan keuangan instan          | P&L, Neraca, Arus Kas ter-generate < 500 ms               |
+| G-4 | Deteksi kebocoran kas            | Aging receivables, duplicate outflow, ghost expense aktif |
 
 ## 4. Scope
 
@@ -51,12 +51,12 @@ Lihat [11_DECISIONS.md](11_DECISIONS.md) untuk alasan penyempitan scope.
 
 ## 5. Stakeholder
 
-| Peran | Pihak | Tanggung Jawab |
-|---|---|---|
-| Executive Sponsor | Gio (Holding CEO) | Persetujuan scope dan prioritas |
-| Coordinating Authority | Chief of Staff | Koordinasi lintas workstream |
-| Office of the CFO | CFO | Spesifikasi akuntansi dan CoA |
-| Office of the CTO | CTO | Arsitektur teknis dan model data |
+| Peran                  | Pihak             | Tanggung Jawab                   |
+| ---------------------- | ----------------- | -------------------------------- |
+| Executive Sponsor      | Gio (Holding CEO) | Persetujuan scope dan prioritas  |
+| Coordinating Authority | Chief of Staff    | Koordinasi lintas workstream     |
+| Office of the CFO      | CFO               | Spesifikasi akuntansi dan CoA    |
+| Office of the CTO      | CTO               | Arsitektur teknis dan model data |
 
 ## 6. Kriteria Sukses
 

@@ -20,12 +20,12 @@ npm install
 
 ## 3. Perintah Pengembangan
 
-| Perintah | Fungsi |
-|---|---|
-| `npm run dev` | Menjalankan server pengembangan Vite dengan hot module reload |
-| `npm run build` | Membangun artefak produksi statis ke direktori `dist/` |
-| `npm run preview` | Menjalankan pratinjau lokal atas hasil `npm run build` |
-| `npm run test` | Menjalankan seluruh uji Vitest |
+| Perintah          | Fungsi                                                        |
+| ----------------- | ------------------------------------------------------------- |
+| `npm run dev`     | Menjalankan server pengembangan Vite dengan hot module reload |
+| `npm run build`   | Membangun artefak produksi statis ke direktori `dist/`        |
+| `npm run preview` | Menjalankan pratinjau lokal atas hasil `npm run build`        |
+| `npm run test`    | Menjalankan seluruh uji Vitest                                |
 
 ## 4. Struktur Folder (Direncanakan)
 

@@ -22,7 +22,11 @@ const MUTATIONS: ReadonlyArray<MutationOption> = [
   { value: 'INCOME', label: 'Pemasukan', hint: 'Dana masuk ke akun kas/bank tujuan.' },
   { value: 'EXPENSE', label: 'Pengeluaran', hint: 'Dana keluar dari akun kas/bank sumber.' },
   { value: 'TRANSFER', label: 'Transfer', hint: 'Pemindahan dana antar akun kas/bank sendiri.' },
-  { value: 'DEBT_PAYMENT', label: 'Bayar Utang', hint: 'Pelunasan Utang Usaha dari akun kas/bank.' },
+  {
+    value: 'DEBT_PAYMENT',
+    label: 'Bayar Utang',
+    hint: 'Pelunasan Utang Usaha dari akun kas/bank.',
+  },
 ]
 
 /** Ambang bukti bayar (FR-032). */
@@ -31,7 +35,12 @@ const PAYABLE_CODE = '20100'
 /** Akun kas/bank yang boleh menjadi sumber/tujuan mutasi. */
 const CASH_CODES = new Set(['10100', '10200', '10300'])
 
-type FieldErrors = Partial<Record<'amount' | 'sourceAccountId' | 'destinationAccountId' | 'categoryId' | 'transactionDate', string>>
+type FieldErrors = Partial<
+  Record<
+    'amount' | 'sourceAccountId' | 'destinationAccountId' | 'categoryId' | 'transactionDate',
+    string
+  >
+>
 
 /** Format ribuan saat mengetik; nilai tersimpan tetap integer. */
 function groupDigits(raw: string): string {
@@ -73,7 +82,7 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
 
   const cashAccounts = useMemo<ReadonlyArray<Account>>(
     () => accounts.filter((a) => a.isActive && CASH_CODES.has(a.code)),
-    [accounts],
+    [accounts]
   )
 
   const accountByCode = useMemo(() => {
@@ -104,7 +113,8 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
 
   function validate(): FieldErrors {
     const next: FieldErrors = {}
-    if (!hasAmount) next.amount = 'Nominal wajib diisi berupa bilangan bulat rupiah lebih besar dari nol.'
+    if (!hasAmount)
+      next.amount = 'Nominal wajib diisi berupa bilangan bulat rupiah lebih besar dari nol.'
     if (!transactionDate || Number.isNaN(Date.parse(transactionDate))) {
       next.transactionDate = 'Tanggal transaksi tidak valid.'
     }
@@ -114,7 +124,11 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
     if (needsDestination(mutationType) && destinationAccountId === '') {
       next.destinationAccountId = 'Pilih akun kas/bank tujuan.'
     }
-    if (mutationType === 'TRANSFER' && sourceAccountId !== '' && sourceAccountId === destinationAccountId) {
+    if (
+      mutationType === 'TRANSFER' &&
+      sourceAccountId !== '' &&
+      sourceAccountId === destinationAccountId
+    ) {
       next.destinationAccountId = 'Akun sumber dan tujuan transfer tidak boleh sama.'
     }
     if (needsCategory(mutationType) && categoryId === '') {
@@ -200,7 +214,9 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
                 aria-pressed={active}
                 className={[
                   'min-h-[44px] border-b border-r border-border px-3 py-2 font-mono text-[0.625rem] uppercase tracking-[0.18em] transition-colors duration-200 ease-editorial',
-                  active ? 'bg-primary text-primary-foreground' : 'bg-transparent text-foreground hover:bg-muted',
+                  active
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-transparent text-foreground hover:bg-muted',
                 ].join(' ')}
               >
                 {option.label}
@@ -345,7 +361,11 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
               ))}
             </select>
             {errors.categoryId && (
-              <p id={`${categorySelectId}-error`} role="alert" className="mt-2 text-xs text-negative">
+              <p
+                id={`${categorySelectId}-error`}
+                role="alert"
+                className="mt-2 text-xs text-negative"
+              >
                 {errors.categoryId}
               </p>
             )}
@@ -379,9 +399,10 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
             <span aria-hidden="true">!</span> Bukti Bayar Diperlukan
           </p>
           <p className="text-xs leading-relaxed text-foreground">
-            Pengeluaran {formatIDR(amount)} melampaui ambang {formatIDR(GHOST_THRESHOLD)}. Tanpa lampiran bukti bayar,
-            transaksi ini akan tercatat berstatus <span className="font-mono uppercase">Unverified</span> dan muncul
-            pada daftar Ghost Expense di panel sentinel.
+            Pengeluaran {formatIDR(amount)} melampaui ambang {formatIDR(GHOST_THRESHOLD)}. Tanpa
+            lampiran bukti bayar, transaksi ini akan tercatat berstatus{' '}
+            <span className="font-mono uppercase">Unverified</span> dan muncul pada daftar Ghost
+            Expense di panel sentinel.
           </p>
         </div>
       )}
@@ -393,13 +414,21 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
             <span aria-hidden="true">!</span> Dugaan Pengeluaran Duplikat
           </p>
           <p className="text-xs leading-relaxed text-foreground">
-            Ditemukan {duplicates.length} pengeluaran dengan nominal dan deskripsi identik dalam 48 jam terakhir:
+            Ditemukan {duplicates.length} pengeluaran dengan nominal dan deskripsi identik dalam 48
+            jam terakhir:
           </p>
           <ul className="mt-3 space-y-1 border-t border-border pt-3">
             {duplicates.map((tx) => (
-              <li key={tx.id} className="flex flex-wrap items-baseline justify-between gap-2 font-mono text-xs">
-                <span className="num text-muted-foreground">{formatDateID(tx.transactionDate)}</span>
-                <span className="min-w-0 flex-1 truncate text-foreground">{tx.description || '—'}</span>
+              <li
+                key={tx.id}
+                className="flex flex-wrap items-baseline justify-between gap-2 font-mono text-xs"
+              >
+                <span className="num text-muted-foreground">
+                  {formatDateID(tx.transactionDate)}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-foreground">
+                  {tx.description || '—'}
+                </span>
                 <span className="num text-negative">{formatIDR(tx.amount)}</span>
               </li>
             ))}
@@ -415,7 +444,11 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
             >
               Bukan duplikat, lanjutkan
             </button>
-            <button type="button" className="btn-ghost min-h-[40px]" onClick={() => setDuplicates([])}>
+            <button
+              type="button"
+              className="btn-ghost min-h-[40px]"
+              onClick={() => setDuplicates([])}
+            >
               Periksa lagi
             </button>
           </div>

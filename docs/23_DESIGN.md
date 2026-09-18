@@ -59,14 +59,15 @@ Warna signal mint diwariskan langsung dari DNA APIPedia/WAPilot agar keluarga pr
 
 Warna semantik keuangan **tetap berada dalam palet ink + mint**, bukan skema hijau-merah SaaS yang jenuh. Positif memakai mint signal (konsisten dengan seluruh produk), negatif memakai **ember/rust gelap** yang selaras suhu warna kertas hangat, bukan merah alarm generik.
 
-| Peran | Nama Token | Nilai HSL | Alasan |
-|---|---|---|---|
-| Positif / Pemasukan | `--positive` | `162 55% 38%` | Mint signal digelapkan sedikit agar tetap terbaca sebagai teks angka (bukan hanya aksen UI) sambil mewarisi identitas brand |
-| Negatif / Pengeluaran | `--negative` | `18 45% 32%` | Ember/rust gelap hangat — kontras dengan mint tanpa memakai merah alarm, tetap sefamili dengan kertas hangat (hue oranye-cokelat gelap) |
-| Netral / Tanpa Perubahan | `--neutral-value` | `185 10% 36%` | Sama dengan `--muted-foreground`, dipakai untuk saldo nol atau nilai referensi |
-| Peringatan Sentinel | `--warning` | `38 70% 42%` | Amber gelap untuk anomali/rekonsiliasi tertunda — di antara mint dan rust secara hue, tidak pernah dipakai untuk nilai transaksi biasa |
+| Peran                    | Nama Token        | Nilai HSL     | Alasan                                                                                                                                  |
+| ------------------------ | ----------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Positif / Pemasukan      | `--positive`      | `162 55% 38%` | Mint signal digelapkan sedikit agar tetap terbaca sebagai teks angka (bukan hanya aksen UI) sambil mewarisi identitas brand             |
+| Negatif / Pengeluaran    | `--negative`      | `18 45% 32%`  | Ember/rust gelap hangat — kontras dengan mint tanpa memakai merah alarm, tetap sefamili dengan kertas hangat (hue oranye-cokelat gelap) |
+| Netral / Tanpa Perubahan | `--neutral-value` | `185 10% 36%` | Sama dengan `--muted-foreground`, dipakai untuk saldo nol atau nilai referensi                                                          |
+| Peringatan Sentinel      | `--warning`       | `38 70% 42%`  | Amber gelap untuk anomali/rekonsiliasi tertunda — di antara mint dan rust secara hue, tidak pernah dipakai untuk nilai transaksi biasa  |
 
 Aturan penerapan:
+
 - Warna semantik ini hanya dipakai pada **nilai angka dan indikator status terkait**, tidak pernah sebagai warna background section atau warna dekoratif luas.
 - `--positive` dan `--negative` selalu dipasangkan dengan tanda/format akuntansi (lihat §7), bukan hanya warna — agar tidak bergantung pada persepsi warna semata (aksesibilitas).
 - `--warning` khusus untuk sentinel/badge peringatan sistem (contoh: saldo tidak seimbang, entri belum diverifikasi), tidak dipakai untuk styling tombol umum.
@@ -79,17 +80,17 @@ Definisi lengkap variabel CSS beserta versi dark mode ada di [24_DESIGN_TOKEN.md
 
 Font display/body: **Archivo** (400–900). Font mono/kicker: **JetBrains Mono** (400–700), selalu uppercase dengan tracking lebar.
 
-| Elemen | Ukuran Mobile | Ukuran Desktop | Weight | Line-height | Letter-spacing |
-|---|---|---|---|---|---|
-| H1 | 36px (text-4xl) | 60–72px (md:text-6xl/lg:text-7xl) | 800–900 | 1.08 | -0.03em |
-| H2 | 30px (text-3xl) | 48px (md:text-5xl) | 800 | 1.15 | -0.02em |
-| H3 | 24px (text-2xl) | 30px (md:text-3xl) | 800 | 1.2 | -0.01em |
-| H4 | 18px (text-lg) | 22px (md:text-xl) | 700 | 1.25 | -0.005em |
-| Body | 14px (text-sm) | 16px (text-base) | 400 | 1.6 | normal |
-| Body Large | 18px (text-lg) | 20px (text-xl) | 400 | 1.6 | normal |
-| Caption | 12px (text-xs) | 13px | 500 | 1.4 | 0.01em |
-| Mono Kicker | 10–11px | 11px | 600–700 | 1.3 | 0.18em–0.3em (uppercase) |
-| Mono Data (angka tabel) | 13px | 14px | 500 | 1.4 | 0 (tabular-nums wajib) |
+| Elemen                  | Ukuran Mobile   | Ukuran Desktop                    | Weight  | Line-height | Letter-spacing           |
+| ----------------------- | --------------- | --------------------------------- | ------- | ----------- | ------------------------ |
+| H1                      | 36px (text-4xl) | 60–72px (md:text-6xl/lg:text-7xl) | 800–900 | 1.08        | -0.03em                  |
+| H2                      | 30px (text-3xl) | 48px (md:text-5xl)                | 800     | 1.15        | -0.02em                  |
+| H3                      | 24px (text-2xl) | 30px (md:text-3xl)                | 800     | 1.2         | -0.01em                  |
+| H4                      | 18px (text-lg)  | 22px (md:text-xl)                 | 700     | 1.25        | -0.005em                 |
+| Body                    | 14px (text-sm)  | 16px (text-base)                  | 400     | 1.6         | normal                   |
+| Body Large              | 18px (text-lg)  | 20px (text-xl)                    | 400     | 1.6         | normal                   |
+| Caption                 | 12px (text-xs)  | 13px                              | 500     | 1.4         | 0.01em                   |
+| Mono Kicker             | 10–11px         | 11px                              | 600–700 | 1.3         | 0.18em–0.3em (uppercase) |
+| Mono Data (angka tabel) | 13px            | 14px                              | 500     | 1.4         | 0 (tabular-nums wajib)   |
 
 Kicker selalu berupa label uppercase pendek, contoh: `LEDGER — JURNAL UMUM ————`.
 
@@ -98,32 +99,38 @@ Kicker selalu berupa label uppercase pendek, contoh: `LEDGER — JURNAL UMUM —
 ## 6. Pola Komponen
 
 ### 6.1 Sticky Header
+
 - Menempel di atas (`position: sticky; top: 0`), border-b tegas 1.5px, background kertas dengan sedikit backdrop (tanpa blur berlebihan yang melanggar aturan hard edge — gunakan opasitas solid, bukan `backdrop-blur` besar).
 - Berisi: wordmark, breadcrumb ledger aktif (mono kicker), status koneksi/sinkronisasi (dot signal berdenyut), theme toggle.
 - Scroll progress bar tipis 3px warna signal (opsional, untuk halaman laporan panjang).
 
 ### 6.2 Sidebar Navigasi
+
 - Lebar tetap (240–280px desktop), border-r 1.5px tegas, collapse jadi off-canvas di mobile.
 - Grup navigasi diberi label mono kicker (`RINGKASAN`, `TRANSAKSI`, `LAPORAN`, `PENGATURAN`).
 - Item aktif: background `--muted`, garis kiri 3px warna signal, teks ink tebal (700).
 
 ### 6.3 Stat Card (Hard Shadow)
+
 - Border 1–1.5px solid, radius 0, background `--card`.
 - Shadow default `hard-shadow-sm` (3px 3px 0), saat hover berubah `hover-lift`: translate(-3px,-3px) + `hard-shadow` (5px 5px 0).
 - Isi: kicker mono (label metrik), angka besar tabular-nums (Archivo 800), delta kecil dengan warna semantik (§4) dan tanda panah teks (▲/▼), bukan ikon panah generik.
 
 ### 6.4 Tabel Ledger
+
 - Header kolom: mono kicker uppercase, border-b 1.5px.
 - Baris data: `font-variant-numeric: tabular-nums` wajib pada seluruh kolom nominal, zebra rule tipis (`--rule` 1px setiap baris ganjil, bukan background block penuh — hanya garis horizontal tipis di atas/bawah tiap grup).
 - Kolom nominal rata kanan; kolom deskripsi rata kiri.
 - Hover baris: background `--muted`, tanpa shadow (baris bukan kartu).
 
 ### 6.5 Form Quick Entry
+
 - Input field: border 1.5px solid, radius 0, focus ring 2px warna signal dengan offset 2px.
 - Label memakai mono kicker kecil di atas input (bukan placeholder-only).
 - Tombol submit primer: bg ink, teks kertas, hover translate(-2px,-2px) + shadow signal tipis.
 
 ### 6.6 Badge Status
+
 - Bentuk: kotak siku (radius 0), border 1px, padding kecil, teks mono uppercase tracking 0.18em.
 - `POSTED`: border+teks `--positive`, background transparan/mint-wash tipis.
 - `VOID`: border+teks `--negative`, teks dicoret (`text-decoration: line-through`) sebagai penanda tambahan non-warna.
@@ -131,24 +138,29 @@ Kicker selalu berupa label uppercase pendek, contoh: `LEDGER — JURNAL UMUM —
 - `Unverified`: border+teks `--warning`, disertai penanda mono `!` di depan label sebagai redundansi non-warna.
 
 ### 6.7 Empty State
+
 - Ilustrasi minimal berupa pola garis/grid (bukan ilustrasi kartun berwarna), judul H4, deskripsi body kecil, satu CTA mono.
 - Border dashed 1.5px mengelilingi area empty state untuk menegaskan "slot kosong di buku besar".
 
 ### 6.8 Toast
+
 - Radius 0, border 1.5px, hard-shadow-sm, posisi bawah-kanan.
 - Warna border mengikuti semantik: sukses = signal/positive, error = negative, peringatan = warning, info = ink netral.
 - Animasi masuk: slideUp (lihat §8), keluar: fade cepat 0.2s.
 
 ### 6.9 Modal Konfirmasi Reversal
+
 - Overlay ink solid opacity tinggi (bukan blur), radius 0, border 1.5px pada panel modal, hard-shadow besar (8px 8px 0).
 - Header modal memakai kicker mono `KONFIRMASI PEMBALIKAN JURNAL`, isi menampilkan ringkasan transaksi asli vs. entri pembalik dalam format tabel ledger mini.
 - Tombol aksi destruktif (konfirmasi reversal) memakai warna `--negative` pada border dan teks, bukan fill merah penuh — tetap dalam disiplin ink+border.
 
 ### 6.10 Footer Editorial
+
 - Grid berbingkai multi-kolom (identitas produk, navigasi, legal/compliance, status sistem), border-t tegas memisahkan dari konten.
 - Baris bawah mono kicker: versi build, waktu sinkronisasi terakhir, copyright.
 
 ### 6.11 Back-to-Top Button
+
 - Kotak siku kecil, fixed bottom-right, border 1.5px, hard-shadow-sm, ikon panah teks/garis (bukan emoji).
 - Muncul dengan fade+translate setelah scroll melewati satu viewport, hover-lift saat disentuh.
 
@@ -170,15 +182,15 @@ Angka adalah elemen konten utama FinTrack Core dan harus mengikuti aturan ketat 
 
 Semua animasi memakai easing kunci `cubic-bezier(0.16, 1, 0.3, 1)` (ease-out tegas, konsisten dengan keluarga produk APIPedia/WAPilot), kecuali dinyatakan lain.
 
-| Animasi | Durasi | Easing | Penggunaan |
-|---|---|---|---|
-| reveal | 0.7s | cubic-bezier(0.16,1,0.3,1) | Elemen section muncul saat scroll (Intersection Observer) |
-| slideUp | 0.7s | cubic-bezier(0.16,1,0.3,1) | Toast masuk, modal muncul |
-| fadeIn | 0.6s | ease-out | Transisi halaman, overlay |
-| scaleIn | 0.6s | cubic-bezier(0.16,1,0.3,1) | Popover, dropdown |
-| hover-lift | 0.2s | cubic-bezier(0.16,1,0.3,1) | Kartu/tombol translate(-3px,-3px) + hard shadow |
-| pulse-dot | 1.4s loop | ease-in-out | Indikator status "live"/sinkronisasi aktif |
-| marquee | 30s linear infinite | linear | Ticker (jika dipakai pada ringkasan laporan berjalan) |
+| Animasi    | Durasi              | Easing                     | Penggunaan                                                |
+| ---------- | ------------------- | -------------------------- | --------------------------------------------------------- |
+| reveal     | 0.7s                | cubic-bezier(0.16,1,0.3,1) | Elemen section muncul saat scroll (Intersection Observer) |
+| slideUp    | 0.7s                | cubic-bezier(0.16,1,0.3,1) | Toast masuk, modal muncul                                 |
+| fadeIn     | 0.6s                | ease-out                   | Transisi halaman, overlay                                 |
+| scaleIn    | 0.6s                | cubic-bezier(0.16,1,0.3,1) | Popover, dropdown                                         |
+| hover-lift | 0.2s                | cubic-bezier(0.16,1,0.3,1) | Kartu/tombol translate(-3px,-3px) + hard shadow           |
+| pulse-dot  | 1.4s loop           | ease-in-out                | Indikator status "live"/sinkronisasi aktif                |
+| marquee    | 30s linear infinite | linear                     | Ticker (jika dipakai pada ringkasan laporan berjalan)     |
 
 **Aksesibilitas motion**: seluruh animasi di atas wajib dibungkus media query `prefers-reduced-motion: reduce` — saat aktif, durasi dipangkas ke `0.01ms` dan transform dihilangkan, hanya perubahan opacity instan yang dipertahankan.
 
@@ -207,12 +219,12 @@ Setiap halaman aplikasi utama FinTrack Core wajib menyertakan:
 
 Breakpoint acuan pengujian dan desain:
 
-| Breakpoint | Lebar | Catatan Utama |
-|---|---|---|
-| Mobile | 375px | Sidebar off-canvas, tabel ledger jadi kartu bertumpuk per transaksi, kicker tetap terlihat |
-| Tablet | 768px | Sidebar dapat collapse ke ikon, tabel ledger mulai menampilkan kolom penuh dengan scroll horizontal jika perlu |
-| Laptop | 1024px | Layout sidebar + kanvas penuh aktif, grid stat card 2–3 kolom |
-| Desktop | 1440px | Grid stat card hingga 4 kolom, max-width kontainer tetap 1280px (konten tidak melebar penuh di layar sangat lebar) |
+| Breakpoint | Lebar  | Catatan Utama                                                                                                      |
+| ---------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
+| Mobile     | 375px  | Sidebar off-canvas, tabel ledger jadi kartu bertumpuk per transaksi, kicker tetap terlihat                         |
+| Tablet     | 768px  | Sidebar dapat collapse ke ikon, tabel ledger mulai menampilkan kolom penuh dengan scroll horizontal jika perlu     |
+| Laptop     | 1024px | Layout sidebar + kanvas penuh aktif, grid stat card 2–3 kolom                                                      |
+| Desktop    | 1440px | Grid stat card hingga 4 kolom, max-width kontainer tetap 1280px (konten tidak melebar penuh di layar sangat lebar) |
 
 ---
 

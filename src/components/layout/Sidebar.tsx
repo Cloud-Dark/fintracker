@@ -70,6 +70,16 @@ function IconAccounts(props: IconProps) {
   )
 }
 
+function IconSentinel(props: IconProps) {
+  return (
+    <svg {...iconBase} {...props}>
+      <path d="M8 1.5 13.5 3.5v4.5c0 3.2-2.3 5.6-5.5 6.5-3.2-.9-5.5-3.3-5.5-6.5V3.5Z" />
+      <path d="M8 5.5v3.5" />
+      <path d="M8 10.75v.75" />
+    </svg>
+  )
+}
+
 function IconSettings(props: IconProps) {
   return (
     <svg {...iconBase} {...props}>
@@ -95,8 +105,9 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { index: '02', to: '/transaksi', label: 'Transaksi', icon: IconTransactions },
   { index: '03', to: '/buku-besar', label: 'Buku Besar', icon: IconLedger },
   { index: '04', to: '/laporan', label: 'Laporan', icon: IconReports },
-  { index: '05', to: '/akun', label: 'Akun & Kategori', icon: IconAccounts },
-  { index: '06', to: '/pengaturan', label: 'Pengaturan', icon: IconSettings },
+  { index: '05', to: '/sentinel', label: 'Sentinel', icon: IconSentinel },
+  { index: '06', to: '/akun', label: 'Akun & Kategori', icon: IconAccounts },
+  { index: '07', to: '/pengaturan', label: 'Pengaturan', icon: IconSettings },
 ]
 
 export type SidebarNavProps = {

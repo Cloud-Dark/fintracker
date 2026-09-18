@@ -13,7 +13,15 @@ export type ModalProps = {
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-export default function Modal({ open, onClose, kicker, title, description, children, actions }: ModalProps) {
+export default function Modal({
+  open,
+  onClose,
+  kicker,
+  title,
+  description,
+  children,
+  actions,
+}: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
   const descriptionId = useId()
@@ -43,7 +51,7 @@ export default function Modal({ open, onClose, kicker, title, description, child
         first.focus()
       }
     },
-    [onClose],
+    [onClose]
   )
 
   useEffect(() => {
@@ -79,7 +87,10 @@ export default function Modal({ open, onClose, kicker, title, description, child
         className="relative z-10 w-full max-w-lg border-[1.5px] border-border bg-card p-6 shadow-hard animate-slide-up"
       >
         {kicker && <p className="kicker mb-3">{kicker}</p>}
-        <h3 id={titleId} className="font-display text-xl font-black tracking-[-0.01em] text-foreground md:text-2xl">
+        <h3
+          id={titleId}
+          className="font-display text-xl font-black tracking-[-0.01em] text-foreground md:text-2xl"
+        >
           {title}
         </h3>
         {description && (

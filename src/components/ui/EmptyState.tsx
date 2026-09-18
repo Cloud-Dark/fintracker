@@ -32,8 +32,12 @@ export default function EmptyState({ title, description, action, className }: Em
         <path d="M30 26h28M30 34h28M30 42h18" strokeOpacity="0.5" />
         <path d="M10 26h8M10 34h8M10 42h8" strokeOpacity="0.3" />
       </svg>
-      <h4 className="mt-6 font-display text-lg font-black tracking-[-0.005em] text-foreground md:text-xl">{title}</h4>
-      {description && <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">{description}</p>}
+      <h4 className="mt-6 font-display text-lg font-black tracking-[-0.005em] text-foreground md:text-xl">
+        {title}
+      </h4>
+      {description && (
+        <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">{description}</p>
+      )}
       {action && <div className="mt-6">{action}</div>}
     </div>
   )

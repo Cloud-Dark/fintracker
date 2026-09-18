@@ -7,6 +7,7 @@ import Transactions from '@/pages/Transactions'
 import GeneralLedger from '@/pages/GeneralLedger'
 import Reports from '@/pages/Reports'
 import Accounts from '@/pages/Accounts'
+import Sentinel from '@/pages/Sentinel'
 import Settings from '@/pages/Settings'
 import NotFound from '@/pages/NotFound'
 
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/transaksi" element={<Transactions />} />
             <Route path="/buku-besar" element={<GeneralLedger />} />
             <Route path="/laporan" element={<Reports />} />
+            <Route path="/sentinel" element={<Sentinel />} />
             <Route path="/akun" element={<Accounts />} />
             <Route path="/pengaturan" element={<Settings />} />
             <Route path="*" element={<NotFound />} />

@@ -49,7 +49,7 @@ function downloadCsv(fileName: string, table: ReadonlyArray<ReadonlyArray<string
     return /[";\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text
   }
   const csv = table.map((row) => row.map(escape).join(';')).join('\r\n')
-  const blob = new Blob([`﻿${csv}`], { type: 'text/csv;charset=utf-8' })
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
   anchor.href = url
@@ -118,7 +118,9 @@ function ReportPanel({
     <div className="panel">
       <div className="flex flex-col gap-3 border-b-[1.5px] border-border p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">{title}</h3>
+          <h3 className="font-display text-xl font-black tracking-[-0.01em] md:text-2xl">
+            {title}
+          </h3>
           <p className="kicker mt-2">{meta}</p>
         </div>
         <button type="button" className="btn-ghost min-h-[40px] shrink-0" onClick={onExport}>
@@ -144,7 +146,7 @@ export default function Reports() {
 
   const range = useMemo(
     () => (period === 'kustom' ? custom : defaultRange(period)),
-    [period, custom],
+    [period, custom]
   )
 
   const pnl: ProfitAndLoss = useMemo(() => profitAndLoss(range), [range])
@@ -194,7 +196,7 @@ export default function Reports() {
 
   const exportFlow = () => {
     const items: CashFlowItem[] = [...flow.inflows, ...flow.outflows].sort((a, b) =>
-      a.date.localeCompare(b.date),
+      a.date.localeCompare(b.date)
     )
     const table: Array<Array<string | number>> = [
       ['Laporan Arus Kas (Metode Langsung)'],
@@ -231,7 +233,11 @@ export default function Reports() {
       {/* Pemilih periode */}
       <div className="panel mb-6 p-5">
         <p className="kicker mb-4">Periode Laporan</p>
-        <div className="flex flex-wrap gap-0 border-l border-t border-border">
+        <div
+          className="flex flex-wrap gap-0 border-l border-t border-border"
+          role="group"
+          aria-label="Pilihan periode laporan"
+        >
           {PERIODS.map((item) => (
             <button
               key={item.key}
@@ -243,7 +249,9 @@ export default function Reports() {
               aria-pressed={period === item.key}
               className={[
                 'min-h-[40px] border-b border-r border-border px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] transition-colors duration-200 ease-editorial',
-                period === item.key ? 'bg-primary text-primary-foreground' : 'bg-transparent hover:bg-muted',
+                period === item.key
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-transparent hover:bg-muted',
               ].join(' ')}
             >
               {item.label}
@@ -282,7 +290,11 @@ export default function Reports() {
       </div>
 
       {/* Tab kotak berbingkai */}
-      <div className="mb-6 flex flex-wrap border-l border-t border-border" role="tablist" aria-label="Jenis laporan">
+      <div
+        className="mb-6 flex flex-wrap border-l border-t border-border"
+        role="tablist"
+        aria-label="Jenis laporan"
+      >
         {TABS.map((item) => (
           <button
             key={item.key}
@@ -306,7 +318,11 @@ export default function Reports() {
 
       {tab === 'laba-rugi' && (
         <div role="tabpanel" id="panel-laba-rugi" aria-labelledby="tab-laba-rugi">
-          <ReportPanel title="Laba Rugi Multi-Step" meta={`Periode ${periodLabel}`} onExport={exportPnl}>
+          <ReportPanel
+            title="Laba Rugi Multi-Step"
+            meta={`Periode ${periodLabel}`}
+            onExport={exportPnl}
+          >
             <LedgerRow label="Pendapatan Operasional" amount={pnl.revenueOperating} />
             <LedgerRow label="Harga Pokok Penjualan (HPP)" amount={-pnl.cogs} />
             <LedgerRow label="Laba Kotor" amount={pnl.grossProfit} kind="subtotal" />
@@ -319,7 +335,12 @@ export default function Reports() {
               <div className="mt-6">
                 <p className="kicker px-4 py-2">Rincian per Akun</p>
                 {pnl.lines.map((line) => (
-                  <LedgerRow key={line.code} code={line.code} label={line.name} amount={line.amount} />
+                  <LedgerRow
+                    key={line.code}
+                    code={line.code}
+                    label={line.name}
+                    amount={line.amount}
+                  />
                 ))}
               </div>
             )}
@@ -333,28 +354,46 @@ export default function Reports() {
             {!sheet.isBalanced && (
               <div className="m-3 border-[1.5px] border-negative bg-warning/10 p-4" role="alert">
                 <p className="kicker mb-1 text-negative">! Neraca Tidak Seimbang</p>
-                <p className="num font-display text-xl font-black text-negative">{formatIDR(sheet.difference)}</p>
+                <p className="num font-display text-xl font-black text-negative">
+                  {formatIDR(sheet.difference)}
+                </p>
                 <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                  Aset tidak sama dengan liabilitas ditambah ekuitas. Jalankan verifikasi integritas pada buku besar.
+                  Aset tidak sama dengan liabilitas ditambah ekuitas. Jalankan verifikasi integritas
+                  pada buku besar.
                 </p>
               </div>
             )}
 
             <p className="kicker px-4 py-2">Aset</p>
             {sheet.assetLines.map((line) => (
-              <LedgerRow key={`a-${line.code}`} code={line.code} label={line.name} amount={line.amount} />
+              <LedgerRow
+                key={`a-${line.code}`}
+                code={line.code}
+                label={line.name}
+                amount={line.amount}
+              />
             ))}
             <LedgerRow label="Total Aset" amount={sheet.assets} kind="subtotal" />
 
             <p className="kicker px-4 pt-6 pb-2">Liabilitas</p>
             {sheet.liabilityLines.map((line) => (
-              <LedgerRow key={`l-${line.code}`} code={line.code} label={line.name} amount={line.amount} />
+              <LedgerRow
+                key={`l-${line.code}`}
+                code={line.code}
+                label={line.name}
+                amount={line.amount}
+              />
             ))}
             <LedgerRow label="Total Liabilitas" amount={sheet.liabilities} kind="subtotal" />
 
             <p className="kicker px-4 pt-6 pb-2">Ekuitas</p>
             {sheet.equityLines.map((line) => (
-              <LedgerRow key={`e-${line.code}`} code={line.code} label={line.name} amount={line.amount} />
+              <LedgerRow
+                key={`e-${line.code}`}
+                code={line.code}
+                label={line.name}
+                amount={line.amount}
+              />
             ))}
             <LedgerRow label="Total Ekuitas" amount={sheet.equity} kind="subtotal" />
 
@@ -367,7 +406,9 @@ export default function Reports() {
               <span
                 className={[
                   'badge',
-                  sheet.isBalanced ? 'border-positive text-positive' : 'border-negative text-negative',
+                  sheet.isBalanced
+                    ? 'border-positive text-positive'
+                    : 'border-negative text-negative',
                 ].join(' ')}
               >
                 {sheet.isBalanced ? 'Seimbang' : '! Tidak Seimbang'}
@@ -395,7 +436,9 @@ export default function Reports() {
               <div className="border-b border-r border-border p-4">
                 <p className="kicker mb-3">Penerimaan Kas</p>
                 {flow.inflows.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">Tidak ada penerimaan kas pada periode ini.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Tidak ada penerimaan kas pada periode ini.
+                  </p>
                 ) : (
                   flow.inflows.map((item) => (
                     <div
@@ -419,7 +462,9 @@ export default function Reports() {
               <div className="border-b border-r border-border p-4">
                 <p className="kicker mb-3">Pengeluaran Kas</p>
                 {flow.outflows.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">Tidak ada pengeluaran kas pada periode ini.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Tidak ada pengeluaran kas pada periode ini.
+                  </p>
                 ) : (
                   flow.outflows.map((item) => (
                     <div

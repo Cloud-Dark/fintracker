@@ -12,5 +12,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // Tolok ukur performa memakan waktu sekitar 40 detik dan dikecualikan dari
+    // `npm test`; jalankan lewat `npm run test:perf`.
+    exclude: ['node_modules/**', 'dist/**', '**/performance.test.ts'],
   },
 })

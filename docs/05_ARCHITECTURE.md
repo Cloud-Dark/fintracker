@@ -107,18 +107,18 @@ sequenceDiagram
 
 ## 3. Tabel Komponen dan Tanggung Jawab
 
-| Komponen | Lapisan | Tanggung Jawab |
-|---|---|---|
-| Pages (`src/pages`) | Presentation | Merangkai komponen per rute, mengikat ke hooks, tanpa logika bisnis. |
-| Components (`src/components`) | Presentation | Elemen UI reusable (form, tabel, grafik, modal); menerima data via props. |
-| Hooks (`src/hooks`) | Application | Menjembatani UI dan domain: memanggil kernel/sentinel/reporting, mengelola status loading/error. |
-| Context + Reducer (`src/hooks` atau `src/context`) | Application | Menyimpan state domain di memori (daftar akun, transaksi, preferensi tema) dan mendistribusikannya ke komponen. |
-| Accounting Kernel (`src/domain/kernel`) | Domain | Menerapkan aturan posting (bagian 2 pada [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md)), memvalidasi invarian Debit=Credit, menghasilkan hash berantai, menerbitkan reversal. |
-| Cash Leakage Sentinel (`src/domain/sentinel`) | Domain | Aging receivables, duplicate outflow, ghost expense tagging, bank reconciliation. |
-| Reporting Engine (`src/domain/reporting`) | Domain | Menghitung Laba Rugi, Neraca, Arus Kas dari baris ledger sesuai formula agregasi. |
-| Repository Interfaces (`src/repositories`) | Persistence | Kontrak akses data (`AccountRepository`, `TransactionRepository`, `LedgerRepository`, `CategoryRepository`); satu-satunya titik akses domain ke data. |
-| Unit of Work (`src/repositories/unitOfWork.ts`) | Persistence | Mengumpulkan mutasi multi-koleksi di memori, memvalidasi, flush berurutan, dan memulihkan snapshot bila gagal (TR-002). |
-| localStorage Adapter (`src/repositories/localStorageAdapter.ts`) | Persistence | Operasi baca/tulis mentah ke `localStorage` dengan namespace `fintrack:v1:*`, serialisasi JSON, dan pemantauan kuota (TR-010). |
+| Komponen                                                         | Lapisan      | Tanggung Jawab                                                                                                                                                                 |
+| ---------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pages (`src/pages`)                                              | Presentation | Merangkai komponen per rute, mengikat ke hooks, tanpa logika bisnis.                                                                                                           |
+| Components (`src/components`)                                    | Presentation | Elemen UI reusable (form, tabel, grafik, modal); menerima data via props.                                                                                                      |
+| Hooks (`src/hooks`)                                              | Application  | Menjembatani UI dan domain: memanggil kernel/sentinel/reporting, mengelola status loading/error.                                                                               |
+| Context + Reducer (`src/hooks` atau `src/context`)               | Application  | Menyimpan state domain di memori (daftar akun, transaksi, preferensi tema) dan mendistribusikannya ke komponen.                                                                |
+| Accounting Kernel (`src/domain/kernel`)                          | Domain       | Menerapkan aturan posting (bagian 2 pada [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md)), memvalidasi invarian Debit=Credit, menghasilkan hash berantai, menerbitkan reversal. |
+| Cash Leakage Sentinel (`src/domain/sentinel`)                    | Domain       | Aging receivables, duplicate outflow, ghost expense tagging, bank reconciliation.                                                                                              |
+| Reporting Engine (`src/domain/reporting`)                        | Domain       | Menghitung Laba Rugi, Neraca, Arus Kas dari baris ledger sesuai formula agregasi.                                                                                              |
+| Repository Interfaces (`src/repositories`)                       | Persistence  | Kontrak akses data (`AccountRepository`, `TransactionRepository`, `LedgerRepository`, `CategoryRepository`); satu-satunya titik akses domain ke data.                          |
+| Unit of Work (`src/repositories/unitOfWork.ts`)                  | Persistence  | Mengumpulkan mutasi multi-koleksi di memori, memvalidasi, flush berurutan, dan memulihkan snapshot bila gagal (TR-002).                                                        |
+| localStorage Adapter (`src/repositories/localStorageAdapter.ts`) | Persistence  | Operasi baca/tulis mentah ke `localStorage` dengan namespace `fintrack:v1:*`, serialisasi JSON, dan pemantauan kuota (TR-010).                                                 |
 
 ## 4. Alur Data & Unit-of-Work / Atomic Commit Emulation
 
@@ -134,7 +134,7 @@ mengemulasikan atomic commit melalui pola unit-of-work di lapisan Persistence
    [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md)) sebelum unit-of-work
    diizinkan melakukan flush. Kegagalan validasi membatalkan seluruh operasi
    tanpa menyentuh penyimpanan sama sekali.
-2. **Snapshot:** Sebelum menulis, unit-of-work menyalin state koleksi yang
+3. **Snapshot:** Sebelum menulis, unit-of-work menyalin state koleksi yang
    akan diubah (misalnya `fintrack:v1:transactions`,
    `fintrack:v1:ledger_entries`, `fintrack:v1:meta:sequence`) ke memori
    sebagai titik pulih.
@@ -193,14 +193,14 @@ Flutter/React Native dengan SQLite lokal, sinkronisasi delta ke PostgreSQL 16
 melalui API gateway (Fastify/Go), idempotensi berbasis Redis, dan replikasi
 multi-perangkat. Pemilik proyek menetapkan arsitektur klien-saja:
 
-| Aspek Asli (plan.md) | Realisasi FinTrack Core | Konsekuensi |
-|---|---|---|
-| Flutter/React Native + SQLite | SPA React + TypeScript + Vite | Tidak ada aplikasi mobile native; hanya web responsif. |
-| PostgreSQL 16 + delta sync | `localStorage` per browser, tanpa sinkronisasi | Data tidak tersinkron antar perangkat (F-18 "Tidak untuk v1"); lihat NFR-005 ekspor JSON sebagai mitigasi. |
-| Backend API (Fastify/Go) + PgBouncer | Tidak ada backend; seluruh logika berjalan di klien | Tidak ada endpoint jaringan; TR-042 operasi offline penuh terpenuhi secara struktural. |
-| Redis idempotency lock store | `client_tx_id` unik dicek di repository lokal (TR-008) | Idempotensi hanya berlaku dalam satu instance browser/localStorage, bukan lintas perangkat. |
-| Trigger database untuk imutabilitas ledger | Repository hanya mengekspos `append`/`read` (TR-004) | Penegakan imutabilitas berada di lapisan aplikasi, bukan di lapisan database. |
-| WAL archiving, RPO/RTO server-side | Ekspor JSON manual oleh pengguna (NFR-005) | Ketahanan data bergantung pada kedisiplinan pengguna melakukan ekspor. |
+| Aspek Asli (plan.md)                       | Realisasi FinTrack Core                                | Konsekuensi                                                                                                |
+| ------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Flutter/React Native + SQLite              | SPA React + TypeScript + Vite                          | Tidak ada aplikasi mobile native; hanya web responsif.                                                     |
+| PostgreSQL 16 + delta sync                 | `localStorage` per browser, tanpa sinkronisasi         | Data tidak tersinkron antar perangkat (F-18 "Tidak untuk v1"); lihat NFR-005 ekspor JSON sebagai mitigasi. |
+| Backend API (Fastify/Go) + PgBouncer       | Tidak ada backend; seluruh logika berjalan di klien    | Tidak ada endpoint jaringan; TR-042 operasi offline penuh terpenuhi secara struktural.                     |
+| Redis idempotency lock store               | `client_tx_id` unik dicek di repository lokal (TR-008) | Idempotensi hanya berlaku dalam satu instance browser/localStorage, bukan lintas perangkat.                |
+| Trigger database untuk imutabilitas ledger | Repository hanya mengekspos `append`/`read` (TR-004)   | Penegakan imutabilitas berada di lapisan aplikasi, bukan di lapisan database.                              |
+| WAL archiving, RPO/RTO server-side         | Ekspor JSON manual oleh pengguna (NFR-005)             | Ketahanan data bergantung pada kedisiplinan pengguna melakukan ekspor.                                     |
 
 Pemetaan lengkap beserta justifikasi dan risiko tercatat pada
 [11_DECISIONS.md](11_DECISIONS.md) (ADR-001 sampai ADR-004) dan

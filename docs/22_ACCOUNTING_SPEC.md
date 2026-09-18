@@ -37,34 +37,34 @@ menghasilkan minimal dua baris agar Debit = Credit.
 
 ### 2.1 INCOME (Pemasukan)
 
-| Baris | Akun | Sisi | Keterangan |
-|---|---|---|---|
-| 1 | Akun kas/bank tujuan (mis. `10100`/`10200`/`10300`) | Debit | Aset bertambah |
-| 2 | Akun pendapatan sesuai kategori (mis. `40100`/`40200`) | Kredit | Pendapatan bertambah |
+| Baris | Akun                                                   | Sisi   | Keterangan           |
+| ----- | ------------------------------------------------------ | ------ | -------------------- |
+| 1     | Akun kas/bank tujuan (mis. `10100`/`10200`/`10300`)    | Debit  | Aset bertambah       |
+| 2     | Akun pendapatan sesuai kategori (mis. `40100`/`40200`) | Kredit | Pendapatan bertambah |
 
 ### 2.2 EXPENSE (Pengeluaran)
 
-| Baris | Akun | Sisi | Keterangan |
-|---|---|---|---|
-| 1 | Akun beban/HPP sesuai kategori (mis. `50100`–`50200`, `60100`–`60300`) | Debit | Beban bertambah |
-| 2 | Akun kas/bank sumber (mis. `10100`/`10200`/`10300`) | Kredit | Aset berkurang |
+| Baris | Akun                                                                   | Sisi   | Keterangan      |
+| ----- | ---------------------------------------------------------------------- | ------ | --------------- |
+| 1     | Akun beban/HPP sesuai kategori (mis. `50100`–`50200`, `60100`–`60300`) | Debit  | Beban bertambah |
+| 2     | Akun kas/bank sumber (mis. `10100`/`10200`/`10300`)                    | Kredit | Aset berkurang  |
 
 ### 2.3 TRANSFER (Transfer Antar Akun)
 
-| Baris | Akun | Sisi | Keterangan |
-|---|---|---|---|
-| 1 | Akun kas/bank penerima | Debit | Aset penerima bertambah |
-| 2 | Akun kas/bank pengirim | Kredit | Aset pengirim berkurang |
+| Baris | Akun                   | Sisi   | Keterangan              |
+| ----- | ---------------------- | ------ | ----------------------- |
+| 1     | Akun kas/bank penerima | Debit  | Aset penerima bertambah |
+| 2     | Akun kas/bank pengirim | Kredit | Aset pengirim berkurang |
 
 Transfer tidak menyentuh akun Pendapatan atau Beban; kategori bersifat opsional
 (FR-001).
 
 ### 2.4 DEBT_PAYMENT (Pembayaran Utang)
 
-| Baris | Akun | Sisi | Keterangan |
-|---|---|---|---|
-| 1 | `20100` Utang Usaha (atau akun liabilitas terkait) | Debit | Liabilitas berkurang |
-| 2 | Akun kas/bank sumber | Kredit | Aset berkurang |
+| Baris | Akun                                               | Sisi   | Keterangan           |
+| ----- | -------------------------------------------------- | ------ | -------------------- |
+| 1     | `20100` Utang Usaha (atau akun liabilitas terkait) | Debit  | Liabilitas berkurang |
+| 2     | Akun kas/bank sumber                               | Kredit | Aset berkurang       |
 
 ## 3. Chart of Accounts (CoA) 5 Digit
 
@@ -72,34 +72,34 @@ Struktur kode dan daftar akun berikut mengikuti [plan.md](../plan.md) bagian
 3.2 secara lengkap dan tidak boleh menyimpang. Kolom **Normal Balance**
 menentukan sisi yang menambah saldo akun tersebut.
 
-| Kode | Nama | Tipe | Normal Balance |
-|---|---|---|---|
-| 10100 | Kas Tunai / Petty Cash | ASSET | DEBET |
-| 10200 | Kas di Bank (Operasional & Payroll) | ASSET | DEBET |
-| 10300 | E-Wallet / Payment Gateway Escrow | ASSET | DEBET |
-| 10400 | Piutang Usaha (Accounts Receivable) | ASSET | DEBET |
-| 20100 | Utang Usaha (Accounts Payable) | LIABILITY | KREDIT |
-| 20200 | Utang Pajak & Beban Akrual | LIABILITY | KREDIT |
-| 30100 | Modal Disetor | EQUITY | KREDIT |
-| 30200 | Laba Ditahan (Retained Earnings) | EQUITY | KREDIT |
-| 40100 | Pendapatan Operasional / Penjualan | REVENUE | KREDIT |
-| 40200 | Pendapatan Non-Operasional / Bunga | REVENUE | KREDIT |
-| 50100 | Biaya Pokok Jasa & Subkontraktor | COGS/HPP | DEBET |
-| 50200 | Biaya Server & Dedicated Client Infrastructure | COGS/HPP | DEBET |
-| 60100 | Gaji & Upah Tim | OPEX | DEBET |
-| 60200 | Marketing & Customer Acquisition | OPEX | DEBET |
-| 60300 | Software, Cloud Tools & Administrasi | OPEX | DEBET |
+| Kode  | Nama                                           | Tipe      | Normal Balance |
+| ----- | ---------------------------------------------- | --------- | -------------- |
+| 10100 | Kas Tunai / Petty Cash                         | ASSET     | DEBET          |
+| 10200 | Kas di Bank (Operasional & Payroll)            | ASSET     | DEBET          |
+| 10300 | E-Wallet / Payment Gateway Escrow              | ASSET     | DEBET          |
+| 10400 | Piutang Usaha (Accounts Receivable)            | ASSET     | DEBET          |
+| 20100 | Utang Usaha (Accounts Payable)                 | LIABILITY | KREDIT         |
+| 20200 | Utang Pajak & Beban Akrual                     | LIABILITY | KREDIT         |
+| 30100 | Modal Disetor                                  | EQUITY    | KREDIT         |
+| 30200 | Laba Ditahan (Retained Earnings)               | EQUITY    | KREDIT         |
+| 40100 | Pendapatan Operasional / Penjualan             | REVENUE   | KREDIT         |
+| 40200 | Pendapatan Non-Operasional / Bunga             | REVENUE   | KREDIT         |
+| 50100 | Biaya Pokok Jasa & Subkontraktor               | COGS/HPP  | DEBET          |
+| 50200 | Biaya Server & Dedicated Client Infrastructure | COGS/HPP  | DEBET          |
+| 60100 | Gaji & Upah Tim                                | OPEX      | DEBET          |
+| 60200 | Marketing & Customer Acquisition               | OPEX      | DEBET          |
+| 60300 | Software, Cloud Tools & Administrasi           | OPEX      | DEBET          |
 
 Rentang kode:
 
-| Rentang | Tipe | Normal Balance |
-|---|---|---|
-| 10000–19999 | ASSET | DEBET |
-| 20000–29999 | LIABILITY | KREDIT |
-| 30000–39999 | EQUITY | KREDIT |
-| 40000–49999 | REVENUE | KREDIT |
-| 50000–59999 | COGS/HPP | DEBET |
-| 60000–69999 | OPEX | DEBET |
+| Rentang     | Tipe      | Normal Balance |
+| ----------- | --------- | -------------- |
+| 10000–19999 | ASSET     | DEBET          |
+| 20000–29999 | LIABILITY | KREDIT         |
+| 30000–39999 | EQUITY    | KREDIT         |
+| 40000–49999 | REVENUE   | KREDIT         |
+| 50000–59999 | COGS/HPP  | DEBET          |
+| 60000–69999 | OPEX      | DEBET          |
 
 CoA di-seed otomatis pada inisialisasi pertama aplikasi (FR-010). Kode akun
 unik dan tidak dapat diduplikasi; akun yang telah memiliki baris ledger hanya
@@ -121,7 +121,7 @@ Invarian ini divalidasi oleh kernel sebelum unit-of-work di-flush ke
 **Konsekuensi pelanggaran:**
 
 1. Jika delta selisih Debit dan Kredit tidak sama dengan nol, seluruh mutasi
-   dalam unit-of-work tersebut dibatalkan (*hard rollback*) — tidak ada baris
+   dalam unit-of-work tersebut dibatalkan (_hard rollback_) — tidak ada baris
    ledger parsial yang tersimpan.
 2. Kernel melempar `LedgerImbalanceError` yang membawa informasi
    `transaction_id` (sementara, belum di-commit), delta, dan daftar baris yang
@@ -135,7 +135,7 @@ Invarian ini divalidasi oleh kernel sebelum unit-of-work di-flush ke
 
 Ledger bersifat immutable (TR-004). Koreksi transaksi yang telah `POSTED`
 tidak pernah dilakukan dengan mengedit atau menghapus baris ledger, melainkan
-melalui penerbitan pasangan *reversing entries* diikuti transaksi baru yang
+melalui penerbitan pasangan _reversing entries_ diikuti transaksi baru yang
 benar (FR-003, US-003).
 
 ### 5.1 Langkah Detail
@@ -163,21 +163,21 @@ Kasus: transaksi EXPENSE Rp 500.000 dari Kas Tunai salah dicatat ke kategori
 
 **Sebelum koreksi — Buku Besar:**
 
-| seq | transaction_id | Akun | Sisi | Nominal | Status Transaksi |
-|---|---|---|---|---|---|
-| 101 | TX-1 | 60200 Marketing & Customer Acquisition | Debit | 500.000 | POSTED |
-| 102 | TX-1 | 10100 Kas Tunai / Petty Cash | Kredit | 500.000 | POSTED |
+| seq | transaction_id | Akun                                   | Sisi   | Nominal | Status Transaksi |
+| --- | -------------- | -------------------------------------- | ------ | ------- | ---------------- |
+| 101 | TX-1           | 60200 Marketing & Customer Acquisition | Debit  | 500.000 | POSTED           |
+| 102 | TX-1           | 10100 Kas Tunai / Petty Cash           | Kredit | 500.000 | POSTED           |
 
 **Sesudah koreksi — Buku Besar (TX-1 tidak diubah, TX-2 reversal, TX-3 benar):**
 
-| seq | transaction_id | Akun | Sisi | Nominal | Status Transaksi |
-|---|---|---|---|---|---|
-| 101 | TX-1 | 60200 Marketing & Customer Acquisition | Debit | 500.000 | VOID |
-| 102 | TX-1 | 10100 Kas Tunai / Petty Cash | Kredit | 500.000 | VOID |
-| 103 | TX-2 (reverses TX-1) | 10100 Kas Tunai / Petty Cash | Debit | 500.000 | POSTED |
-| 104 | TX-2 (reverses TX-1) | 60200 Marketing & Customer Acquisition | Kredit | 500.000 | POSTED |
-| 105 | TX-3 (koreksi benar) | 60300 Software, Cloud Tools & Administrasi | Debit | 500.000 | POSTED |
-| 106 | TX-3 (koreksi benar) | 10100 Kas Tunai / Petty Cash | Kredit | 500.000 | POSTED |
+| seq | transaction_id       | Akun                                       | Sisi   | Nominal | Status Transaksi |
+| --- | -------------------- | ------------------------------------------ | ------ | ------- | ---------------- |
+| 101 | TX-1                 | 60200 Marketing & Customer Acquisition     | Debit  | 500.000 | VOID             |
+| 102 | TX-1                 | 10100 Kas Tunai / Petty Cash               | Kredit | 500.000 | VOID             |
+| 103 | TX-2 (reverses TX-1) | 10100 Kas Tunai / Petty Cash               | Debit  | 500.000 | POSTED           |
+| 104 | TX-2 (reverses TX-1) | 60200 Marketing & Customer Acquisition     | Kredit | 500.000 | POSTED           |
+| 105 | TX-3 (koreksi benar) | 60300 Software, Cloud Tools & Administrasi | Debit  | 500.000 | POSTED           |
+| 106 | TX-3 (koreksi benar) | 10100 Kas Tunai / Petty Cash               | Kredit | 500.000 | POSTED           |
 
 Saldo bersih akun `10100` dan `60300`/`60200` setelah TX-1..TX-3 identik
 dengan hasil pencatatan yang benar sejak awal, tanpa satu pun baris ledger
@@ -227,7 +227,7 @@ sentinel dimuat.
   baris ledger dicari padanannya pada CSV.
 - Baris yang tidak berpasangan pada kedua arah dilaporkan sebagai selisih.
 - Penutupan periode (jika diimplementasikan) ditolak selama masih terdapat
-  selisih — *Zero Variance Tolerance*, tanpa toleransi pembulatan.
+  selisih — _Zero Variance Tolerance_, tanpa toleransi pembulatan.
 
 ## 7. Formula Laporan
 
@@ -322,10 +322,10 @@ sesuai bagian 2, dengan nominal dalam rupiah utuh.
 Input pengguna: Tipe `INCOME`, Nominal 5.000.000, Akun Rekening Bank, Kategori
 "Penjualan Jasa".
 
-| seq | Akun | Sisi | Nominal |
-|---|---|---|---|
-| 201 | 10200 Kas di Bank (Operasional & Payroll) | Debit | 5.000.000 |
-| 202 | 40100 Pendapatan Operasional / Penjualan | Kredit | 5.000.000 |
+| seq | Akun                                      | Sisi   | Nominal   |
+| --- | ----------------------------------------- | ------ | --------- |
+| 201 | 10200 Kas di Bank (Operasional & Payroll) | Debit  | 5.000.000 |
+| 202 | 40100 Pendapatan Operasional / Penjualan  | Kredit | 5.000.000 |
 
 Validasi: SUM(Debit) - SUM(Kredit) = 5.000.000 - 5.000.000 = 0. Sah.
 
@@ -334,10 +334,10 @@ Validasi: SUM(Debit) - SUM(Kredit) = 5.000.000 - 5.000.000 = 0. Sah.
 Input pengguna: Tipe `EXPENSE`, Nominal 1.200.000, Akun Kas Tunai, Kategori
 "Marketing & Customer Acquisition".
 
-| seq | Akun | Sisi | Nominal |
-|---|---|---|---|
-| 203 | 60200 Marketing & Customer Acquisition | Debit | 1.200.000 |
-| 204 | 10100 Kas Tunai / Petty Cash | Kredit | 1.200.000 |
+| seq | Akun                                   | Sisi   | Nominal   |
+| --- | -------------------------------------- | ------ | --------- |
+| 203 | 60200 Marketing & Customer Acquisition | Debit  | 1.200.000 |
+| 204 | 10100 Kas Tunai / Petty Cash           | Kredit | 1.200.000 |
 
 Validasi: 1.200.000 - 1.200.000 = 0. Sah. Karena nominal > Rp 1.000.000,
 transaksi ini diperiksa sentinel Ghost Expense (bagian 6.3); bila tanpa
@@ -348,22 +348,22 @@ lampiran bukti bayar, ditandai `Unverified Expense`.
 Input pengguna: Tipe `TRANSFER`, Nominal 2.000.000, dari Rekening Bank ke
 E-Wallet.
 
-| seq | Akun | Sisi | Nominal |
-|---|---|---|---|
-| 205 | 10300 E-Wallet / Payment Gateway Escrow | Debit | 2.000.000 |
+| seq | Akun                                      | Sisi   | Nominal   |
+| --- | ----------------------------------------- | ------ | --------- |
+| 205 | 10300 E-Wallet / Payment Gateway Escrow   | Debit  | 2.000.000 |
 | 206 | 10200 Kas di Bank (Operasional & Payroll) | Kredit | 2.000.000 |
 
 Validasi: 2.000.000 - 2.000.000 = 0. Sah.
 
 ### Ringkasan Saldo Setelah Tiga Transaksi
 
-| Akun | Debit Kumulatif | Kredit Kumulatif | Saldo (Normal Balance) |
-|---|---|---|---|
-| 10100 Kas Tunai | 0 | 1.200.000 | -1.200.000 (turun) |
-| 10200 Kas di Bank | 5.000.000 | 2.000.000 | 3.000.000 |
-| 10300 E-Wallet | 2.000.000 | 0 | 2.000.000 |
-| 40100 Pendapatan Operasional | 0 | 5.000.000 | 5.000.000 |
-| 60200 Marketing | 1.200.000 | 0 | 1.200.000 |
+| Akun                         | Debit Kumulatif | Kredit Kumulatif | Saldo (Normal Balance) |
+| ---------------------------- | --------------- | ---------------- | ---------------------- |
+| 10100 Kas Tunai              | 0               | 1.200.000        | -1.200.000 (turun)     |
+| 10200 Kas di Bank            | 5.000.000       | 2.000.000        | 3.000.000              |
+| 10300 E-Wallet               | 2.000.000       | 0                | 2.000.000              |
+| 40100 Pendapatan Operasional | 0               | 5.000.000        | 5.000.000              |
+| 60200 Marketing              | 1.200.000       | 0                | 1.200.000              |
 
 Total Debit seluruh baris (5.000.000 + 1.200.000 + 2.000.000) = Total Kredit
 seluruh baris (5.000.000 + 1.200.000 + 2.000.000) = 8.200.000, memenuhi

@@ -65,6 +65,7 @@ export default function Accounts() {
     const used = new Set<string>()
     for (const entry of getLedgerEntries()) used.add(entry.accountId)
     return used
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `accounts` penanda invalidasi; getLedgerEntries() membaca penyimpanan.
   }, [accounts])
 
   const grouped = useMemo(() => {
@@ -82,7 +83,7 @@ export default function Accounts() {
       const next = accounts.map((item) =>
         item.id === account.id
           ? { ...item, isActive: !item.isActive, updatedAt: new Date().toISOString() }
-          : item,
+          : item
       )
       saveAccounts(next)
       setAccounts(next)
@@ -92,7 +93,7 @@ export default function Accounts() {
         variant: 'success',
       })
     },
-    [accounts, push],
+    [accounts, push]
   )
 
   const submitAccount = useCallback(() => {
@@ -132,7 +133,11 @@ export default function Accounts() {
       setCode('')
       setName('')
       setAccountError(null)
-      push({ title: 'Akun ditambahkan', description: `${created.code} — ${created.name}`, variant: 'success' })
+      push({
+        title: 'Akun ditambahkan',
+        description: `${created.code} — ${created.name}`,
+        variant: 'success',
+      })
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Gagal menyimpan akun.'
       setAccountError(message)
@@ -146,7 +151,11 @@ export default function Accounts() {
       setCategoryError('Nama kategori minimal 3 karakter.')
       return
     }
-    if (categories.some((c) => c.type === categoryType && c.name.toLowerCase() === trimmed.toLowerCase())) {
+    if (
+      categories.some(
+        (c) => c.type === categoryType && c.name.toLowerCase() === trimmed.toLowerCase()
+      )
+    ) {
       setCategoryError('Kategori dengan nama tersebut sudah ada pada tipe ini.')
       return
     }
@@ -184,7 +193,7 @@ export default function Accounts() {
       const next = categories.map((item) =>
         item.id === category.id
           ? { ...item, isActive: !item.isActive, updatedAt: new Date().toISOString() }
-          : item,
+          : item
       )
       saveCategories(next)
       setCategories(next)
@@ -194,7 +203,7 @@ export default function Accounts() {
         variant: 'success',
       })
     },
-    [categories, push],
+    [categories, push]
   )
 
   const columns: ReadonlyArray<Column<Account>> = useMemo(
@@ -229,7 +238,9 @@ export default function Accounts() {
         key: 'status',
         header: 'Status',
         render: (row) => (
-          <Badge variant={row.isActive ? 'posted' : 'draft'}>{row.isActive ? 'Aktif' : 'Nonaktif'}</Badge>
+          <Badge variant={row.isActive ? 'posted' : 'draft'}>
+            {row.isActive ? 'Aktif' : 'Nonaktif'}
+          </Badge>
         ),
       },
       {
@@ -253,13 +264,17 @@ export default function Accounts() {
         ),
       },
     ],
-    [toggleAccountActive, usedAccountIds],
+    [toggleAccountActive, usedAccountIds]
   )
 
   const incomeCategories = categories.filter((c) => c.type === 'INCOME')
   const expenseCategories = categories.filter((c) => c.type === 'EXPENSE')
 
-  const renderCategoryList = (list: ReadonlyArray<Category>, heading: string, headingId: string) => (
+  const renderCategoryList = (
+    list: ReadonlyArray<Category>,
+    heading: string,
+    headingId: string
+  ) => (
     <div className="border-b border-r border-border p-5">
       <h3 id={headingId} className="font-display text-lg font-black tracking-[-0.005em] md:text-xl">
         {heading}
@@ -308,7 +323,11 @@ export default function Accounts() {
         title="Bagan Akun"
         description="Chart of Accounts dan kategori transaksi. Akun yang sudah dipakai pada buku besar hanya dapat dinonaktifkan, tidak dihapus."
         action={
-          <button type="button" className="btn-primary min-h-[40px]" onClick={() => setAccountModalOpen(true)}>
+          <button
+            type="button"
+            className="btn-primary min-h-[40px]"
+            onClick={() => setAccountModalOpen(true)}
+          >
             Tambah Akun
           </button>
         }
@@ -334,7 +353,11 @@ export default function Accounts() {
           title="Kategori Transaksi"
           description="Kategori memetakan transaksi ke akun pendapatan atau beban default saat posting."
           action={
-            <button type="button" className="btn-primary min-h-[40px]" onClick={() => setCategoryModalOpen(true)}>
+            <button
+              type="button"
+              className="btn-primary min-h-[40px]"
+              onClick={() => setCategoryModalOpen(true)}
+            >
               Tambah Kategori
             </button>
           }
@@ -424,7 +447,11 @@ export default function Accounts() {
             </select>
           </div>
           {accountError && (
-            <p id="acc-error" role="alert" className="border-[1.5px] border-negative p-3 text-xs text-negative">
+            <p
+              id="acc-error"
+              role="alert"
+              className="border-[1.5px] border-negative p-3 text-xs text-negative"
+            >
               {accountError}
             </p>
           )}
@@ -514,7 +541,11 @@ export default function Accounts() {
             </select>
           </div>
           {categoryError && (
-            <p id="cat-error" role="alert" className="border-[1.5px] border-negative p-3 text-xs text-negative">
+            <p
+              id="cat-error"
+              role="alert"
+              className="border-[1.5px] border-negative p-3 text-xs text-negative"
+            >
               {categoryError}
             </p>
           )}

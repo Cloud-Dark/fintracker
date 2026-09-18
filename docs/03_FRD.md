@@ -16,6 +16,7 @@ Sistem menyediakan form pencatatan dengan tepat empat atribut masukan:
 tipe mutasi, nominal, akun sumber/tujuan, dan kategori alokasi.
 
 **Acceptance Criteria**
+
 - Tipe mutasi terbatas pada `INCOME`, `EXPENSE`, `TRANSFER`, `DEBT_PAYMENT`.
 - Nominal wajib bilangan bulat positif dalam satuan rupiah utuh.
 - Kategori wajib untuk `INCOME` dan `EXPENSE`, opsional untuk `TRANSFER`.
@@ -28,6 +29,7 @@ Setiap transaksi dikonversi menjadi minimal dua baris ledger sesuai aturan pada
 [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md).
 
 **Acceptance Criteria**
+
 - Jumlah debit sama dengan jumlah kredit untuk setiap transaksi.
 - Bila delta bukan nol, penyimpanan dibatalkan seluruhnya dan galat ditampilkan.
 
@@ -37,6 +39,7 @@ Pengguna tidak dapat mengubah atau menghapus transaksi yang telah diposting.
 Koreksi dilakukan melalui penerbitan pasangan reversing entries.
 
 **Acceptance Criteria**
+
 - Transaksi asal berubah status menjadi `VOID` dan tetap tampil di riwayat.
 - Transaksi reversal mereferensikan `reverses_transaction_id` transaksi asal.
 - Baris ledger transaksi asal tidak berubah sama sekali.
@@ -55,6 +58,7 @@ inisialisasi pertama, dengan kode dan tipe sesuai
 [22_ACCOUNTING_SPEC.md](22_ACCOUNTING_SPEC.md) bagian 2.
 
 **Acceptance Criteria**
+
 - Kode akun unik; duplikasi ditolak.
 - Akun dengan baris ledger tidak dapat dihapus, hanya dinonaktifkan.
 - Tipe akun terbatas pada `ASSET`, `LIABILITY`, `EQUITY`, `REVENUE`, `EXPENSE`.
@@ -64,6 +68,7 @@ inisialisasi pertama, dengan kode dan tipe sesuai
 Kategori bertipe `INCOME` atau `EXPENSE`, mendukung satu tingkat induk-anak.
 
 **Acceptance Criteria**
+
 - Kategori yang dipakai transaksi tidak dapat dihapus, hanya dinonaktifkan.
 - Setiap kategori dipetakan ke satu akun CoA default.
 
@@ -107,6 +112,7 @@ Sistem memperingatkan bila terdeteksi pengeluaran dengan nominal identik ke
 vendor atau deskripsi yang sama dalam rentang 48 jam.
 
 **Acceptance Criteria**
+
 - Peringatan bersifat non-blocking; pengguna dapat melanjutkan secara sadar.
 
 ### FR-032 — Ghost Expense Tagging
@@ -120,6 +126,7 @@ Impor mutasi rekening format CSV, pencocokan dua arah dengan baris ledger
 berdasarkan tanggal dan nominal, serta pelaporan selisih.
 
 **Acceptance Criteria**
+
 - Penutupan periode ditolak bila masih terdapat selisih (zero variance tolerance).
 
 ## 5. Integritas & Data

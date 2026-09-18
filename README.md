@@ -27,39 +27,47 @@ npm install
 npm run dev      # server pengembangan
 npm run build    # artefak produksi ke dist/
 npm run preview  # pratinjau hasil build
-npm test         # uji unit
+npm test         # uji unit dan penerimaan
+npm run test:perf # tolok ukur performa (sekitar 40 detik)
+npm run lint     # ESLint, gagal bila ada peringatan
+npm run format   # Prettier
+npm run verify   # lint + typecheck + test + build
 ```
 
 Prasyarat: Node.js 20 atau lebih baru.
 
 ## Penerapan (Cloudflare Pages)
 
-| Pengaturan | Nilai |
-|---|---|
-| Build command | `npm run build` |
-| Output directory | `dist` |
-| SPA fallback | `public/_redirects` berisi `/* /index.html 200` |
+| Pengaturan       | Nilai                                           |
+| ---------------- | ----------------------------------------------- |
+| Build command    | `npm run build`                                 |
+| Output directory | `dist`                                          |
+| SPA fallback     | `public/_redirects` berisi `/* /index.html 200` |
 
 ## Dokumentasi
 
 Seluruh dokumentasi proyek berada di [`docs/`](docs/README.md).
 
-| Dokumen | Isi |
-|---|---|
-| [00_PROJECT_CHARTER.md](docs/00_PROJECT_CHARTER.md) | Visi, scope, kriteria sukses |
-| [01_PRD.md](docs/01_PRD.md) | Kebutuhan produk dan user story |
-| [03_FRD.md](docs/03_FRD.md) | Kebutuhan fungsional ber-ID |
-| [04_TRD.md](docs/04_TRD.md) | Kebutuhan teknis dan stack |
-| [05_ARCHITECTURE.md](docs/05_ARCHITECTURE.md) | Arsitektur berlapis dan alur data |
-| [20_DATABASE.md](docs/20_DATABASE.md) | Skema penyimpanan `localStorage` |
+| Dokumen                                             | Isi                                         |
+| --------------------------------------------------- | ------------------------------------------- |
+| [00_PROJECT_CHARTER.md](docs/00_PROJECT_CHARTER.md) | Visi, scope, kriteria sukses                |
+| [01_PRD.md](docs/01_PRD.md)                         | Kebutuhan produk dan user story             |
+| [03_FRD.md](docs/03_FRD.md)                         | Kebutuhan fungsional ber-ID                 |
+| [04_TRD.md](docs/04_TRD.md)                         | Kebutuhan teknis dan stack                  |
+| [05_ARCHITECTURE.md](docs/05_ARCHITECTURE.md)       | Arsitektur berlapis dan alur data           |
+| [20_DATABASE.md](docs/20_DATABASE.md)               | Skema penyimpanan `localStorage`            |
 | [22_ACCOUNTING_SPEC.md](docs/22_ACCOUNTING_SPEC.md) | Spesifikasi akuntansi dan Chart of Accounts |
-| [23_DESIGN.md](docs/23_DESIGN.md) | Sistem desain |
-| [24_DESIGN_TOKEN.md](docs/24_DESIGN_TOKEN.md) | Token desain siap implementasi |
-| [17_DEVELOPER_SETUP.md](docs/17_DEVELOPER_SETUP.md) | Panduan pengembang |
+| [23_DESIGN.md](docs/23_DESIGN.md)                   | Sistem desain                               |
+| [24_DESIGN_TOKEN.md](docs/24_DESIGN_TOKEN.md)       | Token desain siap implementasi              |
+| [17_DEVELOPER_SETUP.md](docs/17_DEVELOPER_SETUP.md) | Panduan pengembang                          |
 
 ## Batasan yang Diketahui
 
 Data terikat pada satu peramban di satu perangkat dan akan hilang bila data
 situs dibersihkan. Tidak ada otentikasi maupun enkripsi at-rest. Lakukan ekspor
-cadangan JSON secara berkala. Rincian dan mitigasi tercatat pada
+cadangan JSON secara berkala.
+
+Kapasitas `localStorage` sebesar 5 MB membatasi riwayat pada sekitar 3.700
+transaksi. Halaman Pengaturan menampilkan pemakaian dan memperingatkan saat
+melewati 80 persen. Rincian dan mitigasi tercatat pada
 [10_RISK_REGISTER.md](docs/10_RISK_REGISTER.md).
