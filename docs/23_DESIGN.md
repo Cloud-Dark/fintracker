@@ -149,6 +149,43 @@ Kicker selalu berupa label uppercase pendek, contoh: `LEDGER — JURNAL UMUM —
 - Diterapkan lewat kelas `.scroll-ledger`, bukan secara global, agar gulir
   peramban bawaan pada dokumen utama tetap terasa native.
 
+### 6.4.3 Dropdown dengan Pencarian
+
+Seluruh dropdown aplikasi memakai komponen `SearchSelect`, bukan elemen
+`select` bawaan peramban. Alasannya dua: elemen bawaan tidak dapat digayakan
+mengikuti bahasa Editorial Brutalism (panel opsinya digambar sistem operasi),
+dan daftar akun dapat tumbuh melewati puluhan baris sehingga memilih tanpa
+pencarian menjadi lambat.
+
+Ketentuan visual:
+
+- Pemicu memakai kelas `.field` yang sama dengan input teks, sehingga satu baris
+  filter terlihat rata.
+- Panel opsi memakai bayangan offset keras `4px 4px 0`, radius nol, dan batas
+  `1.5px` — konsisten dengan panel lain.
+- Opsi yang sedang terpilih ditandai garis kiri mint selebar 2px. Ini adalah
+  satu-satunya sinyal mint pada daftar; opsi yang sedang disorot papan tik
+  memakai latar `muted`, bukan mint, agar aturan satu sinyal tetap berlaku.
+- Area gulir daftar dibatasi `max-h-60` dan memakai `.scroll-ledger`.
+
+Ketentuan perilaku dan aksesibilitas:
+
+- Pola ARIA combobox: pemicu `role="combobox"`, daftar `role="listbox"`, sorotan
+  disampaikan lewat `aria-activedescendant` karena fokus DOM berada pada kotak
+  pencarian.
+- Papan tik: `ArrowDown`/`ArrowUp` berpindah dengan pembungkusan di kedua ujung,
+  `Home`/`End` melompat ke ujung, `Enter` memilih, `Escape` menutup, `Tab`
+  menutup lalu melanjutkan urutan fokus.
+- Pencocokan mengabaikan besar-kecil huruf dan seluruh karakter selain huruf dan
+  angka, sehingga label `10100 · Kas Tunai` tetap ditemukan dengan mengetik
+  `10100 kas` maupun `10100kas`.
+- Urutan hasil mengikuti urutan asal daftar, tidak diurutkan ulang berdasarkan
+  peringkat kecocokan, agar urutan kode akun yang bermakna tidak teracak.
+
+Pemilih ukuran halaman pada komponen `Pagination` sengaja tetap memakai elemen
+`select` bawaan: pilihannya hanya empat angka, sehingga kotak pencarian justru
+menambah langkah tanpa mempercepat apa pun.
+
 ### 6.5 Form Quick Entry
 
 - Input field: border 1.5px solid, radius 0, focus ring 2px warna signal dengan offset 2px.

@@ -4,6 +4,7 @@ import { detectDuplicateOutflow } from '@/domain/sentinel'
 import { formatIDR, parseIDR } from '@/lib/money'
 import { formatDateID, toISODate } from '@/lib/date'
 import type { Account, MutationType, Transaction } from '@/types'
+import SearchSelect from '@/components/ui/SearchSelect'
 
 export type QuickEntryFormProps = {
   /** Dipanggil setelah transaksi berhasil diposting. */
@@ -286,22 +287,17 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
             <label htmlFor={sourceId} className="kicker mb-2 block">
               Akun Sumber
             </label>
-            <select
+            <SearchSelect
               id={sourceId}
               name="sourceAccountId"
               value={sourceAccountId}
-              onChange={(e) => setSourceAccountId(e.target.value)}
-              aria-invalid={errors.sourceAccountId ? true : undefined}
-              aria-describedby={errors.sourceAccountId ? `${sourceId}-error` : undefined}
-              className="field min-h-[44px]"
-            >
-              <option value="">— Pilih akun —</option>
-              {cashAccounts.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.code} · {a.name}
-                </option>
-              ))}
-            </select>
+              onChange={setSourceAccountId}
+              placeholder="— Pilih akun —"
+              invalid={Boolean(errors.sourceAccountId)}
+              describedBy={errors.sourceAccountId ? `${sourceId}-error` : undefined}
+              className="min-h-[44px]"
+              options={cashAccounts.map((a) => ({ value: a.id, label: `${a.code} · ${a.name}` }))}
+            />
             {errors.sourceAccountId && (
               <p id={`${sourceId}-error`} role="alert" className="mt-2 text-xs text-negative">
                 {errors.sourceAccountId}
@@ -315,22 +311,17 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
             <label htmlFor={destinationId} className="kicker mb-2 block">
               Akun Tujuan
             </label>
-            <select
+            <SearchSelect
               id={destinationId}
               name="destinationAccountId"
               value={destinationAccountId}
-              onChange={(e) => setDestinationAccountId(e.target.value)}
-              aria-invalid={errors.destinationAccountId ? true : undefined}
-              aria-describedby={errors.destinationAccountId ? `${destinationId}-error` : undefined}
-              className="field min-h-[44px]"
-            >
-              <option value="">— Pilih akun —</option>
-              {cashAccounts.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.code} · {a.name}
-                </option>
-              ))}
-            </select>
+              onChange={setDestinationAccountId}
+              placeholder="— Pilih akun —"
+              invalid={Boolean(errors.destinationAccountId)}
+              describedBy={errors.destinationAccountId ? `${destinationId}-error` : undefined}
+              className="min-h-[44px]"
+              options={cashAccounts.map((a) => ({ value: a.id, label: `${a.code} · ${a.name}` }))}
+            />
             {errors.destinationAccountId && (
               <p id={`${destinationId}-error`} role="alert" className="mt-2 text-xs text-negative">
                 {errors.destinationAccountId}
@@ -344,22 +335,17 @@ export default function QuickEntryForm({ onPosted, onCancel }: QuickEntryFormPro
             <label htmlFor={categorySelectId} className="kicker mb-2 block">
               Kategori
             </label>
-            <select
+            <SearchSelect
               id={categorySelectId}
               name="categoryId"
               value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              aria-invalid={errors.categoryId ? true : undefined}
-              aria-describedby={errors.categoryId ? `${categorySelectId}-error` : undefined}
-              className="field min-h-[44px]"
-            >
-              <option value="">— Pilih kategori —</option>
-              {visibleCategories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              onChange={setCategoryId}
+              placeholder="— Pilih kategori —"
+              invalid={Boolean(errors.categoryId)}
+              describedBy={errors.categoryId ? `${categorySelectId}-error` : undefined}
+              className="min-h-[44px]"
+              options={visibleCategories.map((c) => ({ value: c.id, label: c.name }))}
+            />
             {errors.categoryId && (
               <p
                 id={`${categorySelectId}-error`}

@@ -565,11 +565,11 @@ export default function Reports() {
           >
             <div className="space-y-6">
               <p className="max-w-prose text-sm text-muted-foreground">
-                Neraca saldo menjumlahkan ulang seluruh baris buku besar langsung dari jurnal,
-                bukan dari saldo yang tersimpan pada akun. Total Debit dan total Kredit hanya
-                akan sama apabila setiap transaksi benar-benar diposting berpasangan, sehingga
-                laporan ini berfungsi sebagai pemeriksaan independen atas invarian yang
-                ditegakkan saat penulisan.
+                Neraca saldo menjumlahkan ulang seluruh baris buku besar langsung dari jurnal, bukan
+                dari saldo yang tersimpan pada akun. Total Debit dan total Kredit hanya akan sama
+                apabila setiap transaksi benar-benar diposting berpasangan, sehingga laporan ini
+                berfungsi sebagai pemeriksaan independen atas invarian yang ditegakkan saat
+                penulisan.
               </p>
 
               {/* Dua lapis pembuktian berdampingan: aritmetika dan keutuhan urutan. */}

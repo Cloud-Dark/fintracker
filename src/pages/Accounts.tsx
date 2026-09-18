@@ -3,6 +3,7 @@ import DataTable, { type Column } from '@/components/ui/DataTable'
 import Badge from '@/components/ui/Badge'
 import Modal from '@/components/ui/Modal'
 import SectionHeader from '@/components/ui/SectionHeader'
+import SearchSelect from '@/components/ui/SearchSelect'
 import {
   bootstrap,
   getAccounts,
@@ -433,18 +434,12 @@ export default function Accounts() {
             <label htmlFor="acc-type" className="kicker mb-2 block">
               Tipe Akun
             </label>
-            <select
+            <SearchSelect
               id="acc-type"
-              className="field"
               value={type}
-              onChange={(event) => setType(event.target.value as AccountType)}
-            >
-              {ACCOUNT_TYPES.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setType(v as AccountType)}
+              options={ACCOUNT_TYPES.map((item) => ({ value: item.value, label: item.label }))}
+            />
           </div>
           {accountError && (
             <p
@@ -507,38 +502,35 @@ export default function Accounts() {
             <label htmlFor="cat-type" className="kicker mb-2 block">
               Tipe Kategori
             </label>
-            <select
+            <SearchSelect
               id="cat-type"
-              className="field"
               value={categoryType}
-              onChange={(event) => setCategoryType(event.target.value as CategoryType)}
-            >
-              <option value="INCOME">Pemasukan</option>
-              <option value="EXPENSE">Pengeluaran</option>
-            </select>
+              onChange={(v) => setCategoryType(v as CategoryType)}
+              options={[
+                { value: 'INCOME', label: 'Pemasukan' },
+                { value: 'EXPENSE', label: 'Pengeluaran' },
+              ]}
+            />
           </div>
           <div>
             <label htmlFor="cat-account" className="kicker mb-2 block">
               Akun Default
             </label>
-            <select
+            <SearchSelect
               id="cat-account"
-              className="field"
               value={categoryAccountCode}
-              onChange={(event) => {
-                setCategoryAccountCode(event.target.value)
+              placeholder="Pilih akun…"
+              onChange={(v) => {
+                setCategoryAccountCode(v)
                 setCategoryError(null)
               }}
-            >
-              <option value="">Pilih akun…</option>
-              {accounts
+              options={accounts
                 .filter((account) => account.isActive)
-                .map((account) => (
-                  <option key={account.id} value={account.code}>
-                    {account.code} — {account.name}
-                  </option>
-                ))}
-            </select>
+                .map((account) => ({
+                  value: account.code,
+                  label: `${account.code} — ${account.name}`,
+                }))}
+            />
           </div>
           {categoryError && (
             <p

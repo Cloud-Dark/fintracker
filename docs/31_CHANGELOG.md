@@ -12,6 +12,15 @@ klien statis.
 
 ### Added
 
+- Komponen `SearchSelect` (`src/components/ui/SearchSelect.tsx`) beserta logika
+  murninya pada `src/lib/select.ts`: dropdown dengan kotak pencarian, pola ARIA
+  combobox, dan navigasi papan tik penuh. Menggantikan seluruh sebelas elemen
+  `select` bawaan pada Transaksi, Buku Besar, Akun & Kategori, serta form Quick
+  Entry.
+- Dua belas uji untuk penyaringan opsi, navigasi sorotan, dan pemetaan label
+  (138 menjadi 150 uji).
+- [23_DESIGN.md](23_DESIGN.md) seksi 6.4.3: ketentuan visual, perilaku, dan
+  aksesibilitas dropdown pencarian.
 - Laporan **Neraca Saldo** (FR-025): fungsi `trialBalance(asOf?)` pada
   `src/domain/reporting.ts` yang menjumlahkan ulang sisi debit dan kredit dari
   baris ledger — bukan dari kolom `currentBalance` — sebagai pembuktian

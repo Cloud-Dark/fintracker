@@ -3,6 +3,7 @@ import SectionHeader from '@/components/ui/SectionHeader'
 import DataTable, { type Column } from '@/components/ui/DataTable'
 import Modal from '@/components/ui/Modal'
 import Badge from '@/components/ui/Badge'
+import SearchSelect from '@/components/ui/SearchSelect'
 import QuickEntryForm from '@/components/transaction/QuickEntryForm'
 import { useLedger } from '@/hooks/useLedger'
 import { formatIDR } from '@/lib/money'
@@ -204,55 +205,38 @@ export default function Transactions() {
           <label htmlFor="filter-bulan" className="kicker mb-2 block">
             Bulan
           </label>
-          <select
+          <SearchSelect
             id="filter-bulan"
+            numeric
             value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            className="field num min-h-[40px]"
-          >
-            <option value="">Semua bulan</option>
-            {months.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
+            onChange={setMonth}
+            clearLabel="Semua bulan"
+            options={months.map((m) => ({ value: m, label: m }))}
+          />
         </div>
         <div>
           <label htmlFor="filter-mutasi" className="kicker mb-2 block">
             Tipe Mutasi
           </label>
-          <select
+          <SearchSelect
             id="filter-mutasi"
             value={mutationFilter}
-            onChange={(e) => setMutationFilter(e.target.value as '' | MutationType)}
-            className="field min-h-[40px]"
-          >
-            <option value="">Semua tipe</option>
-            {MUTATION_VALUES.map((m) => (
-              <option key={m} value={m}>
-                {MUTATION_LABEL[m]}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setMutationFilter(v as '' | MutationType)}
+            clearLabel="Semua tipe"
+            options={MUTATION_VALUES.map((m) => ({ value: m, label: MUTATION_LABEL[m] }))}
+          />
         </div>
         <div>
           <label htmlFor="filter-status" className="kicker mb-2 block">
             Status
           </label>
-          <select
+          <SearchSelect
             id="filter-status"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as '' | TransactionStatus)}
-            className="field min-h-[40px]"
-          >
-            <option value="">Semua status</option>
-            {STATUS_VALUES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setStatusFilter(v as '' | TransactionStatus)}
+            clearLabel="Semua status"
+            options={STATUS_VALUES.map((s) => ({ value: s, label: s }))}
+          />
         </div>
         <div>
           <label htmlFor="filter-cari" className="kicker mb-2 block">

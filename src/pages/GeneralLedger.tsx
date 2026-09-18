@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import DataTable, { type Column } from '@/components/ui/DataTable'
 import Badge from '@/components/ui/Badge'
 import SectionHeader from '@/components/ui/SectionHeader'
+import SearchSelect from '@/components/ui/SearchSelect'
 import { bootstrap, getAccounts, getLedgerEntries } from '@/repositories/db'
 import { generalLedger, type GeneralLedgerFilter, type GeneralLedgerRow } from '@/domain/reporting'
 import { verifyChain, type ChainVerification } from '@/domain/kernel'
@@ -177,19 +178,16 @@ export default function GeneralLedger() {
             <label htmlFor="gl-account" className="kicker mb-2 block">
               Akun
             </label>
-            <select
+            <SearchSelect
               id="gl-account"
-              className="field"
               value={accountId}
-              onChange={(event) => setAccountId(event.target.value)}
-            >
-              <option value="">Semua akun</option>
-              {accounts.map((account) => (
-                <option key={account.id} value={account.id}>
-                  {account.code} — {account.name}
-                </option>
-              ))}
-            </select>
+              onChange={setAccountId}
+              clearLabel="Semua akun"
+              options={accounts.map((account) => ({
+                value: account.id,
+                label: `${account.code} — ${account.name}`,
+              }))}
+            />
           </div>
           <div>
             <label htmlFor="gl-from" className="kicker mb-2 block">
@@ -219,16 +217,16 @@ export default function GeneralLedger() {
             <label htmlFor="gl-entry" className="kicker mb-2 block">
               Tipe Entri
             </label>
-            <select
+            <SearchSelect
               id="gl-entry"
-              className="field"
               value={entryType}
-              onChange={(event) => setEntryType(event.target.value as EntryFilter)}
-            >
-              <option value="ALL">Semua</option>
-              <option value="DEBIT">Debit</option>
-              <option value="CREDIT">Kredit</option>
-            </select>
+              onChange={(v) => setEntryType(v as EntryFilter)}
+              options={[
+                { value: 'ALL', label: 'Semua' },
+                { value: 'DEBIT', label: 'Debit' },
+                { value: 'CREDIT', label: 'Kredit' },
+              ]}
+            />
           </div>
         </div>
       </div>
