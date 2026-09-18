@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="kicker">Build v0.1.0 — Ledger Desk</p>
+          <p className="kicker">Build v{__APP_VERSION__} — Ledger Desk</p>
           <p className="kicker">Data tersimpan lokal di peramban ini</p>
           <p className="kicker">&copy; {new Date().getFullYear()} FinTrack Core</p>
         </div>

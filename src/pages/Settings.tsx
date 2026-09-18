@@ -18,7 +18,7 @@ import { formatIDR } from '@/lib/money'
 import { formatDateID } from '@/lib/date'
 import type { BackupEnvelope } from '@/types'
 
-const APP_VERSION = '0.1.0'
+const APP_VERSION = __APP_VERSION__
 const RESET_PHRASE = 'HAPUS SEMUA'
 const WARNING_RATIO = 0.8
 

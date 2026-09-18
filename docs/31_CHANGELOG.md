@@ -10,7 +10,12 @@ klien statis.
 
 ## [Unreleased]
 
-Belum ada perubahan tercatat sejak 0.4.0.
+### Fixed
+
+- Nomor versi pada footer dan halaman Pengaturan sebelumnya ditulis tetap
+  sebagai 0.1.0 sehingga tertinggal dari rilis sesungguhnya. Keduanya kini
+  membaca konstanta `__APP_VERSION__` yang disuntikkan saat build dari
+  `package.json`, menjadikan berkas tersebut sumber kebenaran tunggal.
 
 ## [0.4.0] - 2026-09-19
 
